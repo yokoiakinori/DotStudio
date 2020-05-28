@@ -4,8 +4,10 @@ import VueRouter from 'vue-router'
 import MyDrawing from './views/MyDrawing.vue'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
-import System from './views/errors/System.vue'
 import ProductDetail from './views/ProductDetail.vue'
+import Friends from './views/Friends.vue'
+import Notification from './views/Notification.vue'
+import System from './views/errors/System.vue'
 import NotFound from './views/errors/NotFound.vue'
 
 import store from './store'
@@ -29,7 +31,7 @@ const router = new VueRouter({
             props: true
         },
         {
-            path: '/drawing', 
+            path: '/drawing',
             component: MyDrawing,
             beforeEnter(to, from, next){
                 if(store.getters['auth/check']){
@@ -50,6 +52,30 @@ const router = new VueRouter({
                     next()
                 }
             }
+        },
+        {
+            path: '/friends',
+            component: Friends,
+            beforeEnter(to, from, next){
+                if(store.getters['auth/check']){
+                    next()
+                }else{
+                    next('/login')
+                }
+            },
+            props:true,
+        },
+        {
+            path: '/notification',
+            component: Notification,
+            beforeEnter(to, from, next){
+                if(store.getters['auth/check']){
+                    next()
+                }else{
+                    next('/login')
+                }
+            },
+            props:true,
         },
         {
             path: '/500',

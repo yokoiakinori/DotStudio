@@ -9,6 +9,16 @@
         </form>
         <div class="navbar__menu">
             <div v-if="isLogin" class="navbar__item">
+                <router-link to="/notification" @click="reset">
+                    通知
+                </router-link>
+            </div>
+            <div v-if="isLogin" class="navbar__item">
+                <router-link to="/friends" @click="reset">
+                    フレンド
+                </router-link>
+            </div>
+            <div v-if="isLogin" class="navbar__item">
                 <router-link to="/drawing" @click="reset">
                     <div class="drawing_link">
                         <i class="fas fa-paint-brush"></i>イラストを描く
@@ -86,14 +96,20 @@ export default {
         font-size: 12px;
     }
 }
+.navbar__item{
+    margin: 10px;
+    a{
+        font-size: 14px;
+    }
+}
 .drawing_link{
-    font-size: 15px;
+    font-size: 14px;
     margin-right: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
-    width: 150px;
-    height: 35px;
+    width: 135px;
+    height: 34px;
     border: solid 1px rgba($maincolor,0.8);
     border-radius: 5px;
     i{
@@ -104,6 +120,7 @@ export default {
     margin-right: 30px;
     flex-grow: 2;
     display: flex;
+    align-items: center;
     justify-content: flex-end;
 }
 </style>
