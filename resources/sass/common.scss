@@ -1,0 +1,36 @@
+@charset "UTF-8";
+
+$maincolor:#282D6F;
+$heartcolor:rgb(211, 52, 78);
+
+p{
+    color: $maincolor;
+}
+label{
+    color: $maincolor;
+}
+li{
+    color: $maincolor;
+    list-style: none;
+}
+a{
+    color: $maincolor;
+    text-decoration: none;
+}
+input{
+    border: none;
+    background: none;
+}
+button{
+    border: none;
+    background: none;
+}
+i{
+    color: $maincolor;
+}
+.heartIcon{
+    color: $heartcolor;
+}
+h2{
+    color: $maincolor;
+}

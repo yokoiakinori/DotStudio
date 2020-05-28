@@ -1,0 +1,40 @@
+p {
+  color: #282D6F;
+}
+
+label {
+  color: #282D6F;
+}
+
+li {
+  color: #282D6F;
+  list-style: none;
+}
+
+a {
+  color: #282D6F;
+  text-decoration: none;
+}
+
+input {
+  border: none;
+  background: none;
+}
+
+button {
+  border: none;
+  background: none;
+}
+
+i {
+  color: #282D6F;
+}
+
+.heartIcon {
+  color: #d3344e;
+}
+
+h2 {
+  color: #282D6F;
+}
+
