@@ -9,27 +9,27 @@ use Tests\TestCase;
 
 class RegisterApiTest extends TestCase
 {
-    use RefreshDatabase;
+	use RefreshDatabase;
 
-    /**
-     * @test
-     */
-    public function should_createdUser()
-    {
-        $data = [
-            'name' => 'vuesplash user',
-            'email' => 'dummy@email.com',
-            'password' => 'test1234',
-            'password_confirmation' => 'test1234',
-        ];
+	/**
+	 * @test
+	 */
+	public function should_createdUser()
+	{
+		$data = [
+			'name' => 'dotstudio user',
+			'email' => 'dummy@email.com',
+			'password' => 'test1234',
+			'password_confirmation' => 'test1234',
+		];
 
-        $response = $this->json('POST', route('register'), $data);
+		$response = $this->json('POST', route('register'), $data);
 
-        $user = User::first();
-        $this->assertEquals($data['name'], $user->name);
+		$user = User::first();
+		$this->assertEquals($data['name'], $user->name);
 
-        $response
-            ->assertStatus(201)
-            ->assertJson(['name' => $user->name]);
-    }
+		$response
+			->assertStatus(201)
+			->assertJson(['name' => $user->name]);
+	}
 }
