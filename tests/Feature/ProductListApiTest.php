@@ -25,9 +25,14 @@ class ProductListApiTest extends TestCase
 
 		$expected_data = $products->map(function ($product) {
 			return [
+				'id' => $product->id,
 				'productname' => $product->productname,
 				'linedot' => $product->linedot,
 				'alldot' => $product->alldot,
+				'colors' => $product->colors,
+				'user' => [
+					'name' => $product->user->name
+				]
 			];
 		})
 			->all();

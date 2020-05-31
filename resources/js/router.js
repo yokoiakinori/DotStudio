@@ -5,6 +5,7 @@ import MyDrawing from './views/MyDrawing.vue'
 import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import ProductDetail from './views/ProductDetail.vue'
+import UsersList from './views/UsersList.vue'
 import Friends from './views/Friends.vue'
 import Notification from './views/Notification.vue'
 import System from './views/errors/System.vue'
@@ -15,77 +16,88 @@ import store from './store'
 Vue.use(VueRouter)
 
 const router = new VueRouter({
-    mode:'history',
-    routes:[
-        {
-            path:'/',
-            component: Home,
-            props: route => {
-                const page = route.query.page
-                return { page: /^[1-9][0-9]*$/.test(page) ? page * 1 : 1}
-            }
-        },
-        {
-            path: '/products/:id',
-            component: ProductDetail,
-            props: true
-        },
-        {
-            path: '/drawing',
-            component: MyDrawing,
-            beforeEnter(to, from, next){
-                if(store.getters['auth/check']){
-                    next()
-                }else{
-                    next('/login')
-                }
-            },
-            props:true,
-        },
-        {
-            path: '/login',
-            component: Login,
-            beforeEnter(to, from, next){
-                if(store.getters['auth/check']){
-                    next('/')
-                }else{
-                    next()
-                }
-            }
-        },
-        {
-            path: '/friends',
-            component: Friends,
-            beforeEnter(to, from, next){
-                if(store.getters['auth/check']){
-                    next()
-                }else{
-                    next('/login')
-                }
-            },
-            props:true,
-        },
-        {
-            path: '/notification',
-            component: Notification,
-            beforeEnter(to, from, next){
-                if(store.getters['auth/check']){
-                    next()
-                }else{
-                    next('/login')
-                }
-            },
-            props:true,
-        },
-        {
-            path: '/500',
-            component: System
-        },
-        {
-            path:'*',
-            component:NotFound
-        }
-    ]
+	mode: 'history',
+	routes: [{
+			path: '/',
+			component: Home,
+			props: route => {
+				const page = route.query.page
+				return {
+					page: /^[1-9][0-9]*$/.test(page) ? page * 1 : 1
+				}
+			}
+		},
+		{
+			path: '/products/:id',
+			component: ProductDetail,
+			props: true
+		},
+		{
+			path: '/drawing',
+			component: MyDrawing,
+			beforeEnter(to, from, next) {
+				if (store.getters['auth/check']) {
+					next()
+				} else {
+					next('/login')
+				}
+			},
+			props: true,
+		},
+		{
+			path: '/login',
+			component: Login,
+			beforeEnter(to, from, next) {
+				if (store.getters['auth/check']) {
+					next('/')
+				} else {
+					next()
+				}
+			}
+		},
+		{
+			path: '/userslist',
+			component: UsersList,
+			props: route => {
+				const page = route.query.page
+				return {
+					page: /^[1-9][0-9]*$/.test(page) ? page * 1 : 1
+				}
+			}
+		},
+		{
+			path: '/friends',
+			component: Friends,
+			beforeEnter(to, from, next) {
+				if (store.getters['auth/check']) {
+					next()
+				} else {
+					next('/login')
+				}
+			},
+			props: true,
+		},
+		{
+			path: '/notification',
+			component: Notification,
+			beforeEnter(to, from, next) {
+				if (store.getters['auth/check']) {
+					next()
+				} else {
+					next('/login')
+				}
+			},
+			props: true,
+		},
+		{
+			path: '/500',
+			component: System
+		},
+		{
+			path: '*',
+			component: NotFound
+		}
+	]
 })
 
 export default router
