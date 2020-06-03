@@ -22,6 +22,8 @@ Route::post('/login', 'Auth\LoginController@login')->name('login');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
 Route::get('/user', fn () => Auth::user())->name('user');
 Route::get('/users/list', 'UserController@list')->name('user.list');
+Route::get('/users/products/{id}', 'UserController@products')->name('user.products');
+Route::get('/users/{id}', 'UserController@currentuser')->name('user.current');
 Route::post('/products', 'ProductController@create')->name('product.create');
 Route::get('/products', 'ProductController@list')->name('product.list');
 Route::post('/products/save', 'ProductController@dotsave')->name('product.save');

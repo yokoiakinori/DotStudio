@@ -26,7 +26,8 @@ class UserListApiTest extends TestCase
 			return [
 				'email' => $user->email,
 				'name' => $user->name,
-				'id' => $user->id
+				'id' => $user->id,
+				'introduction' => 'よろしくお願いします。'
 			];
 		})
 			->all();

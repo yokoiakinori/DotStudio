@@ -21,6 +21,7 @@ class RegisterApiTest extends TestCase
 			'email' => 'dummy@email.com',
 			'password' => 'test1234',
 			'password_confirmation' => 'test1234',
+			'introduction' => 'よろしくお願いします。'
 		];
 
 		$response = $this->json('POST', route('register'), $data);

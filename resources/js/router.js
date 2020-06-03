@@ -6,6 +6,7 @@ import Home from './views/Home.vue'
 import Login from './views/Login.vue'
 import ProductDetail from './views/ProductDetail.vue'
 import UsersList from './views/UsersList.vue'
+import UserDetail from './views/UserDetail.vue'
 import Friends from './views/Friends.vue'
 import Notification from './views/Notification.vue'
 import System from './views/errors/System.vue'
@@ -64,6 +65,11 @@ const router = new VueRouter({
 					page: /^[1-9][0-9]*$/.test(page) ? page * 1 : 1
 				}
 			}
+		},
+		{
+			path: '/users/:id',
+			component: UserDetail,
+			props: true,
 		},
 		{
 			path: '/friends',
