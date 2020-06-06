@@ -1,27 +1,30 @@
 <template>
-<div id="controller">
+  <div id="controller">
     <UserProduction></UserProduction>
     <ColorPalet></ColorPalet>
-</div>
+    <DrawTool></DrawTool>
+  </div>
 </template>
 
 <script>
-import ColorPalet from "./Colorpalet/ColorPalet.vue"
-import UserProduction from "../ProdauctionsList/UserProductions.vue"
+import ColorPalet from './Colorpalet/ColorPalet.vue';
+import UserProduction from '../ProdauctionsList/UserProductions.vue';
+import DrawTool from './DrawTool/DrawTool.vue';
 
 export default {
-    components:{
-        ColorPalet,
-        UserProduction
-    }
-}
+  components: {
+    ColorPalet,
+    UserProduction,
+    DrawTool,
+  },
+};
 </script>
 
 <style lang="scss" scoped>
-#controller{
-    width: 30%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+#controller {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 </style>

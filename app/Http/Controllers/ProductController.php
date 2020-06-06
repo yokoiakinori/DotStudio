@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use PhpParser\Node\Expr\Cast\String_;
 
 class ProductController extends Controller
 {
@@ -29,6 +30,7 @@ class ProductController extends Controller
 		$product->alldot = $request->alldot;
 		$product->colors = str_repeat("white_", $request->alldot);
 		$product->save();
+		return $product;
 	}
 
 	public function list(Request $request)
@@ -41,7 +43,7 @@ class ProductController extends Controller
 	public function dotsave(Request $request)
 	{
 		$userid = Auth::id();
-		$products = Product::with('user')->find($userid)->orderBy('id', 'asc')->get();
+		$products = Product::with('user')->where('user_id', $userid)->orderBy('id', 'asc')->get();
 		$currentid = $request->currentProduct;
 		$product = $products[$currentid - 1];
 		$color = "";
@@ -55,7 +57,7 @@ class ProductController extends Controller
 	public function current(Request $request)
 	{
 		$userid = Auth::id();
-		$products = Product::with('user')->find($userid)->orderBy('id', 'asc')->get();
+		$products = Product::with('user')->where('user_id', $userid)->orderBy('id', 'asc')->get();
 		$product = $products[$request['id'] - 1]->colors;
 		$productcolors = explode("_", $product);
 		return response($productcolors, 200);
@@ -71,6 +73,11 @@ class ProductController extends Controller
 	{
 		$product = Product::where('id', $id)->with('user', 'comments.user', 'likes')->first();
 		return $product ?? abort(404);
+	}
+
+	public function delete(String $id)
+	{
+		Product::destroy($id);
 	}
 
 	public function addComment(Product $product, StoreComment $request)
