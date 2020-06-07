@@ -36,6 +36,6 @@ class ProductCreateApiTest extends TestCase
 		$this->assertEquals($data['productname'], $product->productname);
 
 		$response
-			->assertStatus(200);
+			->assertStatus(201);
 	}
 }

@@ -2279,6 +2279,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   computed: {
     isLogin: function isLogin() {
@@ -2289,6 +2292,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     userid: function userid() {
       return this.$store.getters['auth/userid'];
+    },
+    thumbnail: function thumbnail() {
+      return this.$store.getters['auth/thumbnail'];
     }
   },
   methods: {
@@ -2805,10 +2811,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 2:
                 response = _context3.sent;
 
-                if (!response.data.product.length == 0) {
+                if (!response.data.products.length == 0) {
                   _this3.currentProduct = 1;
 
-                  for (i = 0; i < response.data.product.length; i++) {
+                  for (i = 0; i < response.data.products.length; i++) {
                     _this3.productionList.push(response.data.product[i]);
 
                     _this3.productionList[i].myproductid = i + 1;
@@ -4115,7 +4121,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "p[data-v-16611310] {\n  color: #282D6F;\n}\nlabel[data-v-16611310] {\n  color: #282D6F;\n}\nli[data-v-16611310] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-16611310] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-16611310] {\n  border: none;\n  background: none;\n}\nbutton[data-v-16611310] {\n  border: none;\n  background: none;\n}\ni[data-v-16611310] {\n  color: #282D6F;\n}\n.heartIcon[data-v-16611310] {\n  color: #d3344e;\n}\nh2[data-v-16611310] {\n  color: #282D6F;\n}\n.navber[data-v-16611310] {\n  width: 100vw;\n  height: 75px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  box-shadow: 0 2px 5px rgba(40, 45, 111, 0.25);\n}\n.navber_logo[data-v-16611310] {\n  font-family: Arial, Helvetica, sans-serif;\n  font-weight: bold;\n  font-size: 32px;\n  margin-left: 30px;\n}\n.searchbox[data-v-16611310] {\n  background-color: rgba(40, 45, 111, 0.3);\n  width: 200px;\n  height: 30px;\n  margin-left: 40px;\n  border-radius: 30px;\n}\n.searchbox i[data-v-16611310] {\n  display: inline-block;\n  text-align: center;\n  vertical-align: bottom;\n  line-height: 20px;\n  font-size: 17px;\n  height: 20px;\n  width: 20px;\n  transform: translateY(4%);\n}\n.searchbox input[data-v-16611310] {\n  margin-left: 15px;\n  width: 145px;\n}\n.searchbox[data-v-16611310] ::-webkit-input-placeholder {\n  color: rgba(40, 45, 111, 0.6);\n  font-size: 12px;\n}\n.navbar__item[data-v-16611310] {\n  margin: 10px;\n}\n.navbar__item a[data-v-16611310] {\n  font-size: 14px;\n}\n.drawing_link[data-v-16611310] {\n  font-size: 14px;\n  margin-right: 15px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 135px;\n  height: 34px;\n  border: solid 1px rgba(40, 45, 111, 0.8);\n  border-radius: 5px;\n}\n.drawing_link i[data-v-16611310] {\n  margin-right: 5px;\n}\n.navbar__menu[data-v-16611310] {\n  margin-right: 30px;\n  flex-grow: 2;\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n}", ""]);
+exports.push([module.i, "p[data-v-16611310] {\n  color: #282D6F;\n}\nlabel[data-v-16611310] {\n  color: #282D6F;\n}\nli[data-v-16611310] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-16611310] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-16611310] {\n  border: none;\n  background: none;\n}\nbutton[data-v-16611310] {\n  border: none;\n  background: none;\n}\ni[data-v-16611310] {\n  color: #282D6F;\n}\n.heartIcon[data-v-16611310] {\n  color: #d3344e;\n}\nh2[data-v-16611310] {\n  color: #282D6F;\n}\n.navber[data-v-16611310] {\n  width: 100vw;\n  height: 75px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  box-shadow: 0 2px 5px rgba(40, 45, 111, 0.25);\n}\n.navber_logo[data-v-16611310] {\n  font-family: Arial, Helvetica, sans-serif;\n  font-weight: bold;\n  font-size: 32px;\n  margin-left: 30px;\n}\n.searchbox[data-v-16611310] {\n  background-color: rgba(40, 45, 111, 0.3);\n  width: 200px;\n  height: 30px;\n  margin-left: 40px;\n  border-radius: 30px;\n}\n.searchbox i[data-v-16611310] {\n  display: inline-block;\n  text-align: center;\n  vertical-align: bottom;\n  line-height: 20px;\n  font-size: 17px;\n  height: 20px;\n  width: 20px;\n  transform: translateY(4%);\n}\n.searchbox input[data-v-16611310] {\n  margin-left: 15px;\n  width: 145px;\n}\n.searchbox[data-v-16611310] ::-webkit-input-placeholder {\n  color: rgba(40, 45, 111, 0.6);\n  font-size: 12px;\n}\n.navbar__item[data-v-16611310] {\n  margin: 10px;\n}\n.navbar__item a[data-v-16611310] {\n  font-size: 14px;\n}\n.drawing_link[data-v-16611310] {\n  font-size: 14px;\n  margin-right: 15px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 135px;\n  height: 34px;\n  border: solid 1px rgba(40, 45, 111, 0.8);\n  border-radius: 5px;\n}\n.drawing_link i[data-v-16611310] {\n  margin-right: 5px;\n}\n.navbar__menu[data-v-16611310] {\n  margin-right: 30px;\n  flex-grow: 2;\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n}\n.thumbnail[data-v-16611310] {\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n}", ""]);
 
 // exports
 
@@ -7041,6 +7047,15 @@ var render = function() {
                 },
                 [_vm._v(_vm._s(_vm.username))]
               )
+            : _vm._e(),
+          _vm._v(" "),
+          _vm.isLogin
+            ? _c("figure", { staticClass: "navbar__item" }, [
+                _c("img", {
+                  staticClass: "thumbnail",
+                  attrs: { src: _vm.thumbnail, alt: "${username}のサムネイル" }
+                })
+              ])
             : _c(
                 "div",
                 { staticClass: "navbar__item" },
@@ -25780,6 +25795,9 @@ var getters = {
   username: function username(state) {
     return state.user ? state.user.name : '';
   },
+  thumbnail: function thumbnail(state) {
+    return state.user.thumbnail ? state.user.thumbnail.url : '';
+  },
   userid: function userid(state) {
     return state.user ? state.user.id : '';
   }
@@ -25801,7 +25819,7 @@ var mutations = {
 var actions = {
   register: function register(context, data) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-      var response;
+      var response1, response2;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
@@ -25811,29 +25829,34 @@ var actions = {
               return axios.post('/api/register', data);
 
             case 3:
-              response = _context.sent;
+              response1 = _context.sent;
+              _context.next = 6;
+              return axios.post('/api/thumbnail');
 
-              if (!(response.status === _util__WEBPACK_IMPORTED_MODULE_2__["CREATED"])) {
-                _context.next = 8;
+            case 6:
+              response2 = _context.sent;
+
+              if (!(response1.status === _util__WEBPACK_IMPORTED_MODULE_2__["CREATED"])) {
+                _context.next = 11;
                 break;
               }
 
               context.commit('setApiStatus', true);
-              context.commit('setUser', response.data);
+              context.commit('setUser', response1.data);
               return _context.abrupt("return", false);
 
-            case 8:
+            case 11:
               context.commit('setApiStatus', false);
 
-              if (response.status === _util__WEBPACK_IMPORTED_MODULE_2__["UNPROCESSABLE_ENTITY"]) {
-                context.commit('setRegisterErrorMessages', response.data.errors);
+              if (response1.status === _util__WEBPACK_IMPORTED_MODULE_2__["UNPROCESSABLE_ENTITY"]) {
+                context.commit('setRegisterErrorMessages', response1.data.errors);
               } else {
-                context.commit('error/setCode', response.status, {
+                context.commit('error/setCode', response1.status, {
                   root: true
                 });
               }
 
-            case 10:
+            case 13:
             case "end":
               return _context.stop();
           }

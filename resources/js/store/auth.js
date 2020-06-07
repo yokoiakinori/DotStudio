@@ -15,6 +15,7 @@ const state = {
 const getters = {
 	check: state => !!state.user,
 	username: state => state.user ? state.user.name : '',
+	thumbnail: state => state.user.thumbnail ? state.user.thumbnail.url : '',
 	userid: state => state.user ? state.user.id : ''
 };
 
@@ -36,19 +37,20 @@ const mutations = {
 const actions = {
 	async register(context, data) {
 		context.commit('setApiStatus', null);
-		const response = await axios.post('/api/register', data);
+		const response1 = await axios.post('/api/register', data);
+		const response2 = await axios.post('/api/thumbnail');
 
-		if (response.status === CREATED) {
+		if (response1.status === CREATED) {
 			context.commit('setApiStatus', true);
-			context.commit('setUser', response.data);
+			context.commit('setUser', response1.data);
 			return false;
 		}
 
 		context.commit('setApiStatus', false);
-		if (response.status === UNPROCESSABLE_ENTITY) {
-			context.commit('setRegisterErrorMessages', response.data.errors);
+		if (response1.status === UNPROCESSABLE_ENTITY) {
+			context.commit('setRegisterErrorMessages', response1.data.errors);
 		} else {
-			context.commit('error/setCode', response.status, {
+			context.commit('error/setCode', response1.status, {
 				root: true
 			});
 		}
