@@ -36,7 +36,7 @@ class ProductController extends Controller
 	public function list(Request $request)
 	{
 		$userid = Auth::id();
-		$list = User::with('product')->find($userid)->toArray();
+		$list = User::with('products')->find($userid)->toArray();
 		return response($list, 200);
 	}
 

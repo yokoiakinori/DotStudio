@@ -20,7 +20,7 @@ class Product extends Model
 	];
 
 	protected $visible = [
-		'id', 'user', 'productname', 'alldot', 'linedot', 'colors', 'comments', 'likes_count', 'liked_by_user', 'user_id'
+		'id', 'user', 'productname', 'alldot', 'linedot', 'colors', 'comments', 'likes_count', 'liked_by_user',
 	];
 
 	public function user()

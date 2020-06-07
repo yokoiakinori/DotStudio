@@ -24,10 +24,8 @@ class User extends Authenticatable
 	 *
 	 * @var array
 	 */
-	protected $hidden = [
-		'password', 'remember_token',
-		'email_verified_at', self::CREATED_AT,
-		self::UPDATED_AT,
+	protected $visible = [
+		'name', 'introduction', 'id', 'thumbnail', 'products'
 	];
 
 	/**
@@ -39,8 +37,13 @@ class User extends Authenticatable
 		'email_verified_at' => 'datetime',
 	];
 
-	public function product()
+	public function products()
 	{
 		return $this->hasMany('App\Product')->orderBy('created_at', 'asc');
+	}
+
+	public function userthumbnail()
+	{
+		return $this->hasOne('App\Userthumbnail');
 	}
 }
