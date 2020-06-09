@@ -5,6 +5,7 @@
         v-for="product in products"
         :key="product.id"
         :product="product"
+        :appearLike="true"
         @like="onLikeClick"
         :productstyle="productStyle"
       />
@@ -131,5 +132,6 @@ export default {
   margin-top: 30px;
   display: flex;
   flex-flow: row wrap;
+  align-content: flex-start;
 }
 </style>

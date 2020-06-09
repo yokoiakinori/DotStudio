@@ -1,5 +1,6 @@
 p {
   color: #282D6F;
+  margin: 0;
 }
 
 label {
@@ -21,9 +22,26 @@ input {
   background: none;
 }
 
+input:focus {
+  outline: none;
+}
+
+textarea {
+  border: none;
+  background: none;
+}
+
+textarea:focus {
+  outline: none;
+}
+
 button {
   border: none;
   background: none;
+}
+
+button:focus {
+  outline: none;
 }
 
 i {
@@ -36,5 +54,17 @@ i {
 
 h2 {
   color: #282D6F;
+  margin: 0;
+}
+
+h1 {
+  color: #282D6F;
+  margin: 0;
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.thumbnail {
+  border-radius: 50%;
 }
 

@@ -15,7 +15,7 @@ const state = {
 const getters = {
 	check: state => !!state.user,
 	username: state => state.user ? state.user.name : '',
-	thumbnail: state => state.user.thumbnail ? state.user.thumbnail.url : '',
+	thumbnail: state => state.user.userthumbnail ? state.user.userthumbnail.url : '',
 	userid: state => state.user ? state.user.id : ''
 };
 
@@ -58,11 +58,13 @@ const actions = {
 
 	async login(context, data) {
 		context.commit('setApiStatus', null);
-		const response = await axios.post('/api/login', data);
+		const login = await axios.post('/api/login', data);
+		const response = await axios.get('/api/user');
+		const user = response.data || null;
 
 		if (response.status === OK) {
 			context.commit('setApiStatus', true);
-			context.commit('setUser', response.data);
+			context.commit('setUser', user);
 			return false;
 		}
 

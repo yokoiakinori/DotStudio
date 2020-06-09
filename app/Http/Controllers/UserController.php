@@ -16,13 +16,15 @@ class UserController extends Controller
 	{
 		$thumbnail = Auth::user()->userthumbnail;
 		$user = Auth::user();
-		$user->thumbnail = $thumbnail;
+		$user->userthumbnail = $thumbnail;
 		return $user;
 	}
 
 	public function list()
 	{
-		$users = User::orderBy(User::CREATED_AT, 'desc')->paginate();
+		$users = User::with(['products' => function ($query) {
+			$query->limit(3);
+		}, 'userthumbnail'])->orderBy(User::CREATED_AT, 'desc')->paginate();
 		return $users;
 	}
 
@@ -34,7 +36,7 @@ class UserController extends Controller
 
 	public function currentuser(String $id)
 	{
-		$user = User::where('id', $id)->get();
+		$user = User::with('userthumbnail')->where('id', $id)->get();
 		return $user;
 	}
 }

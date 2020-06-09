@@ -3,7 +3,11 @@
     <div class="card" @mouseleave="currentToggle" @mouseenter="currentToggle">
       <transition>
         <RouterLink :to="`/products/${product.id}`" v-show="current">
-          <button :class="{ 'product_action_liked':product.liked_by_user}" @click.prevent="like">
+          <button
+            :class="{ 'product_action_liked':product.liked_by_user}"
+            @click.prevent="like"
+            v-if="appearLike"
+          >
             <i class="fas fa-heart heartIcon"></i>
             {{product.likes_count}}
           </button>
@@ -29,6 +33,7 @@ export default {
     TodisplayDot,
   },
   props: {
+    appearLike: false,
     product: {},
     productstyle: {
       width: 0,

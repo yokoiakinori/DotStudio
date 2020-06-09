@@ -19,10 +19,12 @@
           </div>
         </router-link>
       </div>
-      <router-link v-if="isLogin" class="navbar__item" :to="`/users/${userid}`">{{username}}</router-link>
-      <figure v-if="isLogin" class="navbar__item">
-        <img class="thumbnail" :src="thumbnail" alt="${username}のサムネイル" />
-      </figure>
+      <router-link v-if="isLogin" class="navbar__item myacount" :to="`/users/${userid}`">
+        <p>{{username}}</p>
+        <figure v-if="isLogin">
+          <img class="thumbnail" :src="thumbnail" :alt="`${username}のサムネイル`" />
+        </figure>
+      </router-link>
       <div v-else class="navbar__item">
         <RouterLink class="button button--link" to="/login">ログイン / 会員登録</RouterLink>
       </div>
@@ -125,6 +127,12 @@ export default {
 .thumbnail {
   width: 40px;
   height: 40px;
-  border-radius: 50%;
+}
+.myacount {
+  display: flex;
+  align-items: center;
+}
+figure {
+  margin: 0 0 0 7px;
 }
 </style>

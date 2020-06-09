@@ -1,14 +1,18 @@
 <template>
   <div class="userDetail">
     <div class="userInformation">
-      <p class="username">{{user.name}}</p>
-      <p class="userintroduction">{{user.introduction}}</p>
+      <img :src="user.thumbnail" :alt="`${user.name}のサムネイル`" class="thumbnail" />
+      <div>
+        <h2 class="username">{{user.name}}</h2>
+        <p class="userintroduction">{{user.introduction}}</p>
+      </div>
     </div>
     <div class="productsList" :style="style">
       <Product
         v-for="product in products"
         :key="product.id"
         :product="product"
+        :appearLike="true"
         :productstyle="productStyle"
       />
     </div>
@@ -37,6 +41,7 @@ export default {
       user: {
         name: String,
         introduction: String,
+        thumbnail: String,
       },
       products: [],
       currentPage: 0,
@@ -66,6 +71,7 @@ export default {
       }
       this.user.name = response.data[0].name;
       this.user.introduction = response.data[0].introduction;
+      this.user.thumbnail = response.data[0].userthumbnail.url;
     },
     async showProducts() {
       const response = await axios.get(`/api/users/products/${this.id}/?page=${this.page}`);
@@ -102,11 +108,21 @@ export default {
   align-items: center;
 }
 .userInformation {
-  width: 900px;
+  width: 850px;
+  padding-top: 30px;
+  display: flex;
+  div {
+    margin-left: 20px;
+  }
 }
 .productsList {
   margin-top: 30px;
   display: flex;
   flex-flow: row wrap;
+  align-content: flex-start;
+}
+.thumbnail {
+  width: 130px;
+  height: 130px;
 }
 </style>

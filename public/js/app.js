@@ -2282,6 +2282,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   computed: {
     isLogin: function isLogin() {
@@ -2815,7 +2817,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                   _this3.currentProduct = 1;
 
                   for (i = 0; i < response.data.products.length; i++) {
-                    _this3.productionList.push(response.data.product[i]);
+                    _this3.productionList.push(response.data.products[i]);
 
                     _this3.productionList[i].myproductid = i + 1;
                   }
@@ -2905,12 +2907,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
     TodisplayDot: _TodisplayDot_vue__WEBPACK_IMPORTED_MODULE_0__["default"]
   },
   props: {
+    appearLike: false,
     product: {},
     productstyle: {
       width: 0,
@@ -3014,6 +3021,7 @@ function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try
 
 function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
 
+//
 //
 //
 //
@@ -3756,6 +3764,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -3775,7 +3787,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     return {
       user: {
         name: String,
-        introduction: String
+        introduction: String,
+        thumbnail: String
       },
       products: [],
       currentPage: 0,
@@ -3824,8 +3837,9 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 6:
                 _this.user.name = response.data[0].name;
                 _this.user.introduction = response.data[0].introduction;
+                _this.user.thumbnail = response.data[0].userthumbnail.url;
 
-              case 8:
+              case 9:
               case "end":
                 return _context.stop();
             }
@@ -3915,9 +3929,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var _components_Pagination_vue__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../components/Pagination.vue */ "./resources/js/components/Pagination.vue");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
-/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
+/* harmony import */ var _components_index_Product_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/index/Product.vue */ "./resources/js/components/index/Product.vue");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! axios */ "./node_modules/axios/index.js");
+/* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_3__);
+/* harmony import */ var _util__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../util */ "./resources/js/util.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -3933,19 +3948,51 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
 
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   components: {
-    Pagination: _components_Pagination_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
+    Pagination: _components_Pagination_vue__WEBPACK_IMPORTED_MODULE_1__["default"],
+    Product: _components_index_Product_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   },
   data: function data() {
     return {
       users: [],
       currentPage: 0,
-      lastPage: 0
+      lastPage: 0,
+      maxwidth: 400
     };
+  },
+  computed: {
+    isLogin: function isLogin() {
+      return this.$store.getters['auth/check'];
+    },
+    productStyle: function productStyle() {
+      var product = "".concat(this.maxwidth / 3, "px");
+      return {
+        width: product,
+        height: product
+      };
+    }
   },
   methods: {
     showUsers: function showUsers() {
@@ -3963,7 +4010,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 2:
                 response = _context.sent;
 
-                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_3__["OK"])) {
+                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_4__["OK"])) {
                   _context.next = 6;
                   break;
                 }
@@ -4026,7 +4073,7 @@ exports = module.exports = __webpack_require__(/*! ../../node_modules/css-loader
 
 
 // module
-exports.push([module.i, "p[data-v-f348271a] {\n  color: #282D6F;\n}\nlabel[data-v-f348271a] {\n  color: #282D6F;\n}\nli[data-v-f348271a] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-f348271a] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-f348271a] {\n  border: none;\n  background: none;\n}\nbutton[data-v-f348271a] {\n  border: none;\n  background: none;\n}\ni[data-v-f348271a] {\n  color: #282D6F;\n}\n.heartIcon[data-v-f348271a] {\n  color: #d3344e;\n}\nh2[data-v-f348271a] {\n  color: #282D6F;\n}\nmain[data-v-f348271a] {\n  width: 1050px;\n  margin: 0 auto;\n  background-color: rgba(40, 45, 111, 0.07);\n}", ""]);
+exports.push([module.i, "p[data-v-f348271a] {\n  color: #282D6F;\n  margin: 0;\n}\nlabel[data-v-f348271a] {\n  color: #282D6F;\n}\nli[data-v-f348271a] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-f348271a] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-f348271a] {\n  border: none;\n  background: none;\n}\ninput[data-v-f348271a]:focus {\n  outline: none;\n}\ntextarea[data-v-f348271a] {\n  border: none;\n  background: none;\n}\ntextarea[data-v-f348271a]:focus {\n  outline: none;\n}\nbutton[data-v-f348271a] {\n  border: none;\n  background: none;\n}\nbutton[data-v-f348271a]:focus {\n  outline: none;\n}\ni[data-v-f348271a] {\n  color: #282D6F;\n}\n.heartIcon[data-v-f348271a] {\n  color: #d3344e;\n}\nh2[data-v-f348271a] {\n  color: #282D6F;\n  margin: 0;\n}\nh1[data-v-f348271a] {\n  color: #282D6F;\n  margin: 0;\n  font-size: 25px;\n  font-weight: bold;\n}\n.thumbnail[data-v-f348271a] {\n  border-radius: 50%;\n}\nmain[data-v-f348271a] {\n  width: 1050px;\n  margin: 0 auto;\n  background-color: rgba(40, 45, 111, 0.07);\n}", ""]);
 
 // exports
 
@@ -4045,7 +4092,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "p[data-v-d270e9b2] {\n  color: #282D6F;\n}\nlabel[data-v-d270e9b2] {\n  color: #282D6F;\n}\nli[data-v-d270e9b2] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-d270e9b2] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-d270e9b2] {\n  border: none;\n  background: none;\n}\nbutton[data-v-d270e9b2] {\n  border: none;\n  background: none;\n}\ni[data-v-d270e9b2] {\n  color: #282D6F;\n}\n.heartIcon[data-v-d270e9b2] {\n  color: #d3344e;\n}\nh2[data-v-d270e9b2] {\n  color: #282D6F;\n}\ndiv[data-v-d270e9b2] {\n  width: 100%;\n}\n.palet[data-v-d270e9b2] {\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: space-between;\n  height: 100px;\n  padding: 20px;\n  margin: 0;\n}\nli[data-v-d270e9b2] {\n  transition-duration: 0.3s;\n  border-radius: 30px;\n  width: 45px;\n  height: 45px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\nli i[data-v-d270e9b2] {\n  transition-duration: 0.3s;\n  font-size: 24px;\n}\n.active[data-v-d270e9b2] {\n  transition-duration: 0.3s;\n  background-color: var(--back-paletcolor);\n  box-shadow: 2px 2px 3px rgba(40, 45, 111, 0.15);\n}\n.active i[data-v-d270e9b2] {\n  transition-duration: 0.3s;\n  color: white !important;\n}", ""]);
+exports.push([module.i, "p[data-v-d270e9b2] {\n  color: #282D6F;\n  margin: 0;\n}\nlabel[data-v-d270e9b2] {\n  color: #282D6F;\n}\nli[data-v-d270e9b2] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-d270e9b2] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-d270e9b2] {\n  border: none;\n  background: none;\n}\ninput[data-v-d270e9b2]:focus {\n  outline: none;\n}\ntextarea[data-v-d270e9b2] {\n  border: none;\n  background: none;\n}\ntextarea[data-v-d270e9b2]:focus {\n  outline: none;\n}\nbutton[data-v-d270e9b2] {\n  border: none;\n  background: none;\n}\nbutton[data-v-d270e9b2]:focus {\n  outline: none;\n}\ni[data-v-d270e9b2] {\n  color: #282D6F;\n}\n.heartIcon[data-v-d270e9b2] {\n  color: #d3344e;\n}\nh2[data-v-d270e9b2] {\n  color: #282D6F;\n  margin: 0;\n}\nh1[data-v-d270e9b2] {\n  color: #282D6F;\n  margin: 0;\n  font-size: 25px;\n  font-weight: bold;\n}\n.thumbnail[data-v-d270e9b2] {\n  border-radius: 50%;\n}\ndiv[data-v-d270e9b2] {\n  width: 100%;\n}\n.palet[data-v-d270e9b2] {\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: space-between;\n  height: 100px;\n  padding: 20px;\n  margin: 0;\n}\nli[data-v-d270e9b2] {\n  transition-duration: 0.3s;\n  border-radius: 30px;\n  width: 45px;\n  height: 45px;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\nli i[data-v-d270e9b2] {\n  transition-duration: 0.3s;\n  font-size: 24px;\n}\n.active[data-v-d270e9b2] {\n  transition-duration: 0.3s;\n  background-color: var(--back-paletcolor);\n  box-shadow: 2px 2px 3px rgba(40, 45, 111, 0.15);\n}\n.active i[data-v-d270e9b2] {\n  transition-duration: 0.3s;\n  color: white !important;\n}", ""]);
 
 // exports
 
@@ -4083,7 +4130,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../../node_modules/c
 
 
 // module
-exports.push([module.i, "p[data-v-a30aae32] {\n  color: #282D6F;\n}\nlabel[data-v-a30aae32] {\n  color: #282D6F;\n}\nli[data-v-a30aae32] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-a30aae32] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-a30aae32] {\n  border: none;\n  background: none;\n}\nbutton[data-v-a30aae32] {\n  border: none;\n  background: none;\n}\ni[data-v-a30aae32] {\n  color: #282D6F;\n}\n.heartIcon[data-v-a30aae32] {\n  color: #d3344e;\n}\nh2[data-v-a30aae32] {\n  color: #282D6F;\n}\ndiv[data-v-a30aae32] {\n  width: 100%;\n}\ndiv ul[data-v-a30aae32] {\n  padding: 0;\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: space-between;\n  padding: 20px;\n}\ni[data-v-a30aae32] {\n  color: rgba(40, 45, 111, 0.3);\n  font-size: 30px;\n}", ""]);
+exports.push([module.i, "p[data-v-a30aae32] {\n  color: #282D6F;\n  margin: 0;\n}\nlabel[data-v-a30aae32] {\n  color: #282D6F;\n}\nli[data-v-a30aae32] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-a30aae32] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-a30aae32] {\n  border: none;\n  background: none;\n}\ninput[data-v-a30aae32]:focus {\n  outline: none;\n}\ntextarea[data-v-a30aae32] {\n  border: none;\n  background: none;\n}\ntextarea[data-v-a30aae32]:focus {\n  outline: none;\n}\nbutton[data-v-a30aae32] {\n  border: none;\n  background: none;\n}\nbutton[data-v-a30aae32]:focus {\n  outline: none;\n}\ni[data-v-a30aae32] {\n  color: #282D6F;\n}\n.heartIcon[data-v-a30aae32] {\n  color: #d3344e;\n}\nh2[data-v-a30aae32] {\n  color: #282D6F;\n  margin: 0;\n}\nh1[data-v-a30aae32] {\n  color: #282D6F;\n  margin: 0;\n  font-size: 25px;\n  font-weight: bold;\n}\n.thumbnail[data-v-a30aae32] {\n  border-radius: 50%;\n}\ndiv[data-v-a30aae32] {\n  width: 100%;\n}\ndiv ul[data-v-a30aae32] {\n  padding: 0;\n  display: flex;\n  flex-flow: row wrap;\n  justify-content: space-between;\n  padding: 20px;\n}\ni[data-v-a30aae32] {\n  color: rgba(40, 45, 111, 0.3);\n  font-size: 30px;\n}", ""]);
 
 // exports
 
@@ -4121,7 +4168,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "p[data-v-16611310] {\n  color: #282D6F;\n}\nlabel[data-v-16611310] {\n  color: #282D6F;\n}\nli[data-v-16611310] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-16611310] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-16611310] {\n  border: none;\n  background: none;\n}\nbutton[data-v-16611310] {\n  border: none;\n  background: none;\n}\ni[data-v-16611310] {\n  color: #282D6F;\n}\n.heartIcon[data-v-16611310] {\n  color: #d3344e;\n}\nh2[data-v-16611310] {\n  color: #282D6F;\n}\n.navber[data-v-16611310] {\n  width: 100vw;\n  height: 75px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  box-shadow: 0 2px 5px rgba(40, 45, 111, 0.25);\n}\n.navber_logo[data-v-16611310] {\n  font-family: Arial, Helvetica, sans-serif;\n  font-weight: bold;\n  font-size: 32px;\n  margin-left: 30px;\n}\n.searchbox[data-v-16611310] {\n  background-color: rgba(40, 45, 111, 0.3);\n  width: 200px;\n  height: 30px;\n  margin-left: 40px;\n  border-radius: 30px;\n}\n.searchbox i[data-v-16611310] {\n  display: inline-block;\n  text-align: center;\n  vertical-align: bottom;\n  line-height: 20px;\n  font-size: 17px;\n  height: 20px;\n  width: 20px;\n  transform: translateY(4%);\n}\n.searchbox input[data-v-16611310] {\n  margin-left: 15px;\n  width: 145px;\n}\n.searchbox[data-v-16611310] ::-webkit-input-placeholder {\n  color: rgba(40, 45, 111, 0.6);\n  font-size: 12px;\n}\n.navbar__item[data-v-16611310] {\n  margin: 10px;\n}\n.navbar__item a[data-v-16611310] {\n  font-size: 14px;\n}\n.drawing_link[data-v-16611310] {\n  font-size: 14px;\n  margin-right: 15px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 135px;\n  height: 34px;\n  border: solid 1px rgba(40, 45, 111, 0.8);\n  border-radius: 5px;\n}\n.drawing_link i[data-v-16611310] {\n  margin-right: 5px;\n}\n.navbar__menu[data-v-16611310] {\n  margin-right: 30px;\n  flex-grow: 2;\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n}\n.thumbnail[data-v-16611310] {\n  width: 40px;\n  height: 40px;\n  border-radius: 50%;\n}", ""]);
+exports.push([module.i, "p[data-v-16611310] {\n  color: #282D6F;\n  margin: 0;\n}\nlabel[data-v-16611310] {\n  color: #282D6F;\n}\nli[data-v-16611310] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-16611310] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-16611310] {\n  border: none;\n  background: none;\n}\ninput[data-v-16611310]:focus {\n  outline: none;\n}\ntextarea[data-v-16611310] {\n  border: none;\n  background: none;\n}\ntextarea[data-v-16611310]:focus {\n  outline: none;\n}\nbutton[data-v-16611310] {\n  border: none;\n  background: none;\n}\nbutton[data-v-16611310]:focus {\n  outline: none;\n}\ni[data-v-16611310] {\n  color: #282D6F;\n}\n.heartIcon[data-v-16611310] {\n  color: #d3344e;\n}\nh2[data-v-16611310] {\n  color: #282D6F;\n  margin: 0;\n}\nh1[data-v-16611310] {\n  color: #282D6F;\n  margin: 0;\n  font-size: 25px;\n  font-weight: bold;\n}\n.thumbnail[data-v-16611310] {\n  border-radius: 50%;\n}\n.navber[data-v-16611310] {\n  width: 100vw;\n  height: 75px;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  box-shadow: 0 2px 5px rgba(40, 45, 111, 0.25);\n}\n.navber_logo[data-v-16611310] {\n  font-family: Arial, Helvetica, sans-serif;\n  font-weight: bold;\n  font-size: 32px;\n  margin-left: 30px;\n}\n.searchbox[data-v-16611310] {\n  background-color: rgba(40, 45, 111, 0.3);\n  width: 200px;\n  height: 30px;\n  margin-left: 40px;\n  border-radius: 30px;\n}\n.searchbox i[data-v-16611310] {\n  display: inline-block;\n  text-align: center;\n  vertical-align: bottom;\n  line-height: 20px;\n  font-size: 17px;\n  height: 20px;\n  width: 20px;\n  transform: translateY(4%);\n}\n.searchbox input[data-v-16611310] {\n  margin-left: 15px;\n  width: 145px;\n}\n.searchbox[data-v-16611310] ::-webkit-input-placeholder {\n  color: rgba(40, 45, 111, 0.6);\n  font-size: 12px;\n}\n.navbar__item[data-v-16611310] {\n  margin: 10px;\n}\n.navbar__item a[data-v-16611310] {\n  font-size: 14px;\n}\n.drawing_link[data-v-16611310] {\n  font-size: 14px;\n  margin-right: 15px;\n  display: flex;\n  align-items: center;\n  justify-content: center;\n  width: 135px;\n  height: 34px;\n  border: solid 1px rgba(40, 45, 111, 0.8);\n  border-radius: 5px;\n}\n.drawing_link i[data-v-16611310] {\n  margin-right: 5px;\n}\n.navbar__menu[data-v-16611310] {\n  margin-right: 30px;\n  flex-grow: 2;\n  display: flex;\n  align-items: center;\n  justify-content: flex-end;\n}\n.thumbnail[data-v-16611310] {\n  width: 40px;\n  height: 40px;\n}\n.myacount[data-v-16611310] {\n  display: flex;\n  align-items: center;\n}\nfigure[data-v-16611310] {\n  margin: 0 0 0 7px;\n}", ""]);
 
 // exports
 
@@ -4159,7 +4206,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "p[data-v-4e225c14] {\n  color: #282D6F;\n}\nlabel[data-v-4e225c14] {\n  color: #282D6F;\n}\nli[data-v-4e225c14] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-4e225c14] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-4e225c14] {\n  border: none;\n  background: none;\n}\nbutton[data-v-4e225c14] {\n  border: none;\n  background: none;\n}\ni[data-v-4e225c14] {\n  color: #282D6F;\n}\n.heartIcon[data-v-4e225c14] {\n  color: #d3344e;\n}\nh2[data-v-4e225c14] {\n  color: #282D6F;\n}\n#MainCanvas[data-v-4e225c14] {\n  width: 60%;\n  height: 60%;\n  margin-right: 5%;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background-color: white;\n  box-shadow: 2px 2px 3px rgba(40, 45, 111, 0.15);\n}\n#MainCanvas ul[data-v-4e225c14] {\n  width: 90%;\n  height: 90%;\n  padding: 0;\n  display: flex;\n  list-style-type: none;\n  flex-direction: row;\n  flex-wrap: wrap;\n  justify-content: space-around;\n  align-items: center;\n  margin: 0;\n}", ""]);
+exports.push([module.i, "p[data-v-4e225c14] {\n  color: #282D6F;\n  margin: 0;\n}\nlabel[data-v-4e225c14] {\n  color: #282D6F;\n}\nli[data-v-4e225c14] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-4e225c14] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-4e225c14] {\n  border: none;\n  background: none;\n}\ninput[data-v-4e225c14]:focus {\n  outline: none;\n}\ntextarea[data-v-4e225c14] {\n  border: none;\n  background: none;\n}\ntextarea[data-v-4e225c14]:focus {\n  outline: none;\n}\nbutton[data-v-4e225c14] {\n  border: none;\n  background: none;\n}\nbutton[data-v-4e225c14]:focus {\n  outline: none;\n}\ni[data-v-4e225c14] {\n  color: #282D6F;\n}\n.heartIcon[data-v-4e225c14] {\n  color: #d3344e;\n}\nh2[data-v-4e225c14] {\n  color: #282D6F;\n  margin: 0;\n}\nh1[data-v-4e225c14] {\n  color: #282D6F;\n  margin: 0;\n  font-size: 25px;\n  font-weight: bold;\n}\n.thumbnail[data-v-4e225c14] {\n  border-radius: 50%;\n}\n#MainCanvas[data-v-4e225c14] {\n  width: 60%;\n  height: 60%;\n  margin-right: 5%;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n  background-color: white;\n  box-shadow: 2px 2px 3px rgba(40, 45, 111, 0.15);\n}\n#MainCanvas ul[data-v-4e225c14] {\n  width: 90%;\n  height: 90%;\n  padding: 0;\n  display: flex;\n  list-style-type: none;\n  flex-direction: row;\n  flex-wrap: wrap;\n  justify-content: space-around;\n  align-items: center;\n  margin: 0;\n}", ""]);
 
 // exports
 
@@ -4178,7 +4225,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "p[data-v-2ffcfd3c] {\n  color: #282D6F;\n}\nlabel[data-v-2ffcfd3c] {\n  color: #282D6F;\n}\nli[data-v-2ffcfd3c] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-2ffcfd3c] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-2ffcfd3c] {\n  border: none;\n  background: none;\n}\nbutton[data-v-2ffcfd3c] {\n  border: none;\n  background: none;\n}\ni[data-v-2ffcfd3c] {\n  color: #282D6F;\n}\n.heartIcon[data-v-2ffcfd3c] {\n  color: #d3344e;\n}\nh2[data-v-2ffcfd3c] {\n  color: #282D6F;\n}\n#overlay[data-v-2ffcfd3c] {\n  z-index: 1;\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background: rgba(0, 0, 0, 0.7);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n#window[data-v-2ffcfd3c] {\n  z-index: 901;\n  width: 40%;\n  height: 70%;\n  padding: 40px;\n  background: white;\n  border-radius: 20px;\n}\n#window input[data-v-2ffcfd3c] {\n  width: 100%;\n  height: 20px;\n}\n.choice[data-v-2ffcfd3c] {\n  display: flex;\n  justify-content: space-between;\n}\nbutton[data-v-2ffcfd3c] {\n  width: 47%;\n  height: 40px;\n  background-color: rgba(40, 45, 111, 0.3);\n  color: #282D6F;\n  font-size: 18px;\n  border-radius: 5px;\n}\n.decision[data-v-2ffcfd3c] {\n  background-color: #282D6F;\n  color: white;\n}", ""]);
+exports.push([module.i, "p[data-v-2ffcfd3c] {\n  color: #282D6F;\n  margin: 0;\n}\nlabel[data-v-2ffcfd3c] {\n  color: #282D6F;\n}\nli[data-v-2ffcfd3c] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-2ffcfd3c] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-2ffcfd3c] {\n  border: none;\n  background: none;\n}\ninput[data-v-2ffcfd3c]:focus {\n  outline: none;\n}\ntextarea[data-v-2ffcfd3c] {\n  border: none;\n  background: none;\n}\ntextarea[data-v-2ffcfd3c]:focus {\n  outline: none;\n}\nbutton[data-v-2ffcfd3c] {\n  border: none;\n  background: none;\n}\nbutton[data-v-2ffcfd3c]:focus {\n  outline: none;\n}\ni[data-v-2ffcfd3c] {\n  color: #282D6F;\n}\n.heartIcon[data-v-2ffcfd3c] {\n  color: #d3344e;\n}\nh2[data-v-2ffcfd3c] {\n  color: #282D6F;\n  margin: 0;\n}\nh1[data-v-2ffcfd3c] {\n  color: #282D6F;\n  margin: 0;\n  font-size: 25px;\n  font-weight: bold;\n}\n.thumbnail[data-v-2ffcfd3c] {\n  border-radius: 50%;\n}\n#overlay[data-v-2ffcfd3c] {\n  z-index: 1;\n  position: fixed;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background: rgba(0, 0, 0, 0.7);\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n#window[data-v-2ffcfd3c] {\n  z-index: 901;\n  width: 40%;\n  height: 70%;\n  padding: 40px;\n  background: white;\n  border-radius: 20px;\n}\n#window input[data-v-2ffcfd3c] {\n  width: 100%;\n  height: 20px;\n}\n.choice[data-v-2ffcfd3c] {\n  display: flex;\n  justify-content: space-between;\n}\nbutton[data-v-2ffcfd3c] {\n  width: 47%;\n  height: 40px;\n  background-color: rgba(40, 45, 111, 0.3);\n  color: #282D6F;\n  font-size: 18px;\n  border-radius: 5px;\n}\n.decision[data-v-2ffcfd3c] {\n  background-color: #282D6F;\n  color: white;\n}", ""]);
 
 // exports
 
@@ -4197,7 +4244,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "p[data-v-2bbb5c20] {\n  color: #282D6F;\n}\nlabel[data-v-2bbb5c20] {\n  color: #282D6F;\n}\nli[data-v-2bbb5c20] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-2bbb5c20] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-2bbb5c20] {\n  border: none;\n  background: none;\n}\nbutton[data-v-2bbb5c20] {\n  border: none;\n  background: none;\n}\ni[data-v-2bbb5c20] {\n  color: #282D6F;\n}\n.heartIcon[data-v-2bbb5c20] {\n  color: #d3344e;\n}\nh2[data-v-2bbb5c20] {\n  color: #282D6F;\n}\nul[data-v-2bbb5c20] {\n  width: 100%;\n  height: 220px;\n  margin: 0;\n  padding: 0;\n  display: flex;\n  justify-content: start;\n  flex-direction: column;\n  align-items: center;\n}\nli[data-v-2bbb5c20] {\n  font-size: 18px;\n  width: 100%;\n  height: 25%;\n  list-style: none;\n  display: flex;\n  justify-content: flex-start;\n  align-items: center;\n  border-bottom: solid 1.2px #282D6F;\n  transition-duration: 0.3s;\n}\nli[data-v-2bbb5c20]:first-child {\n  border-top: solid 1.2px #282D6F;\n}\nli span[data-v-2bbb5c20] {\n  margin: 0 20px;\n}\n#createProduction[data-v-2bbb5c20] {\n  color: rgba(40, 45, 111, 0.6);\n}\n.v-enter-active[data-v-2bbb5c20],\n.v-leave-active[data-v-2bbb5c20] {\n  transition: opacity 0.2s;\n}\n.v-enter[data-v-2bbb5c20],\n.v-leave-to[data-v-2bbb5c20] {\n  opacity: 0;\n}\n.active[data-v-2bbb5c20] {\n  transition-duration: 0.3s;\n  background-color: #282D6F;\n  color: white;\n}\n.active i[data-v-2bbb5c20] {\n  color: white !important;\n  margin-left: 10px;\n}\n.product-name[data-v-2bbb5c20] {\n  width: 52%;\n}\n.save-button[data-v-2bbb5c20] {\n  color: white;\n  font-size: 15px;\n  width: 16%;\n  border-right: solid 1px white;\n}\nlabel[data-v-2bbb5c20] {\n  width: 100%;\n  font-size: 16px;\n}\ninput[data-v-2bbb5c20] {\n  width: 100%;\n  height: 45px;\n  border-bottom: solid 1px #282D6F;\n  margin-bottom: 30px;\n}", ""]);
+exports.push([module.i, "p[data-v-2bbb5c20] {\n  color: #282D6F;\n  margin: 0;\n}\nlabel[data-v-2bbb5c20] {\n  color: #282D6F;\n}\nli[data-v-2bbb5c20] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-2bbb5c20] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-2bbb5c20] {\n  border: none;\n  background: none;\n}\ninput[data-v-2bbb5c20]:focus {\n  outline: none;\n}\ntextarea[data-v-2bbb5c20] {\n  border: none;\n  background: none;\n}\ntextarea[data-v-2bbb5c20]:focus {\n  outline: none;\n}\nbutton[data-v-2bbb5c20] {\n  border: none;\n  background: none;\n}\nbutton[data-v-2bbb5c20]:focus {\n  outline: none;\n}\ni[data-v-2bbb5c20] {\n  color: #282D6F;\n}\n.heartIcon[data-v-2bbb5c20] {\n  color: #d3344e;\n}\nh2[data-v-2bbb5c20] {\n  color: #282D6F;\n  margin: 0;\n}\nh1[data-v-2bbb5c20] {\n  color: #282D6F;\n  margin: 0;\n  font-size: 25px;\n  font-weight: bold;\n}\n.thumbnail[data-v-2bbb5c20] {\n  border-radius: 50%;\n}\nul[data-v-2bbb5c20] {\n  width: 100%;\n  height: 220px;\n  margin: 0;\n  padding: 0;\n  display: flex;\n  justify-content: start;\n  flex-direction: column;\n  align-items: center;\n}\nli[data-v-2bbb5c20] {\n  font-size: 18px;\n  width: 100%;\n  height: 25%;\n  list-style: none;\n  display: flex;\n  justify-content: flex-start;\n  align-items: center;\n  border-bottom: solid 1.2px #282D6F;\n  transition-duration: 0.3s;\n}\nli[data-v-2bbb5c20]:first-child {\n  border-top: solid 1.2px #282D6F;\n}\nli span[data-v-2bbb5c20] {\n  margin: 0 20px;\n}\n#createProduction[data-v-2bbb5c20] {\n  color: rgba(40, 45, 111, 0.6);\n}\n.v-enter-active[data-v-2bbb5c20],\n.v-leave-active[data-v-2bbb5c20] {\n  transition: opacity 0.2s;\n}\n.v-enter[data-v-2bbb5c20],\n.v-leave-to[data-v-2bbb5c20] {\n  opacity: 0;\n}\n.active[data-v-2bbb5c20] {\n  transition-duration: 0.3s;\n  background-color: #282D6F;\n  color: white;\n}\n.active i[data-v-2bbb5c20] {\n  color: white !important;\n  margin-left: 10px;\n}\n.product-name[data-v-2bbb5c20] {\n  width: 52%;\n}\n.save-button[data-v-2bbb5c20] {\n  color: white;\n  font-size: 15px;\n  width: 16%;\n  border-right: solid 1px white;\n}\nlabel[data-v-2bbb5c20] {\n  width: 100%;\n  font-size: 16px;\n}\ninput[data-v-2bbb5c20] {\n  width: 100%;\n  height: 45px;\n  border-bottom: solid 1px #282D6F;\n  margin-bottom: 30px;\n}", ""]);
 
 // exports
 
@@ -4216,7 +4263,7 @@ exports = module.exports = __webpack_require__(/*! ../../../../node_modules/css-
 
 
 // module
-exports.push([module.i, "p[data-v-7fff1b57] {\n  color: #282D6F;\n}\nlabel[data-v-7fff1b57] {\n  color: #282D6F;\n}\nli[data-v-7fff1b57] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-7fff1b57] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-7fff1b57] {\n  border: none;\n  background: none;\n}\nbutton[data-v-7fff1b57] {\n  border: none;\n  background: none;\n}\ni[data-v-7fff1b57] {\n  color: #282D6F;\n}\n.heartIcon[data-v-7fff1b57] {\n  color: #d3344e;\n}\nh2[data-v-7fff1b57] {\n  color: #282D6F;\n}\ndiv[data-v-7fff1b57] {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\ndiv .card[data-v-7fff1b57] {\n  background-color: white;\n  padding: 0;\n  margin: 0;\n  width: 90%;\n  height: 90%;\n  border-radius: 15px;\n  position: relative;\n  justify-content: center;\n  align-items: center;\n  box-shadow: 2px 2px 3px rgba(40, 45, 111, 0.15);\n}\ndiv .card a[data-v-7fff1b57] {\n  position: absolute;\n  border-radius: 15px;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: 10;\n  background-color: rgba(40, 45, 111, 0.2);\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n  align-items: flex-end;\n}\ndiv .card a button[data-v-7fff1b57] {\n  transition-duration: 0.3s;\n  margin: 18px;\n  z-index: 20;\n  width: 60px;\n  height: 35px;\n  border-radius: 5px;\n  font-size: 14px;\n  background-color: white;\n}\ndiv .card ul[data-v-7fff1b57] {\n  padding: 0;\n  margin: 0;\n  width: 85%;\n  height: 85%;\n  display: flex;\n  list-style-type: none;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n.product_action_liked[data-v-7fff1b57] {\n  background-color: #d3344e !important;\n  transition-duration: 0.3s;\n  color: white;\n}\n.product_action_liked i[data-v-7fff1b57] {\n  color: white;\n}\n.v-enter-active[data-v-7fff1b57],\n.v-leave-active[data-v-7fff1b57] {\n  transition: opacity 0.3s;\n}\n.v-enter[data-v-7fff1b57], .v-leave-to[data-v-7fff1b57] {\n  opacity: 0;\n}", ""]);
+exports.push([module.i, "p[data-v-7fff1b57] {\n  color: #282D6F;\n  margin: 0;\n}\nlabel[data-v-7fff1b57] {\n  color: #282D6F;\n}\nli[data-v-7fff1b57] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-7fff1b57] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-7fff1b57] {\n  border: none;\n  background: none;\n}\ninput[data-v-7fff1b57]:focus {\n  outline: none;\n}\ntextarea[data-v-7fff1b57] {\n  border: none;\n  background: none;\n}\ntextarea[data-v-7fff1b57]:focus {\n  outline: none;\n}\nbutton[data-v-7fff1b57] {\n  border: none;\n  background: none;\n}\nbutton[data-v-7fff1b57]:focus {\n  outline: none;\n}\ni[data-v-7fff1b57] {\n  color: #282D6F;\n}\n.heartIcon[data-v-7fff1b57] {\n  color: #d3344e;\n}\nh2[data-v-7fff1b57] {\n  color: #282D6F;\n  margin: 0;\n}\nh1[data-v-7fff1b57] {\n  color: #282D6F;\n  margin: 0;\n  font-size: 25px;\n  font-weight: bold;\n}\n.thumbnail[data-v-7fff1b57] {\n  border-radius: 50%;\n}\ndiv[data-v-7fff1b57] {\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\ndiv .card[data-v-7fff1b57] {\n  background-color: white;\n  padding: 0;\n  margin: 0;\n  width: 90%;\n  height: 90%;\n  border-radius: 15px;\n  position: relative;\n  justify-content: center;\n  align-items: center;\n  box-shadow: 2px 2px 3px rgba(40, 45, 111, 0.15);\n}\ndiv .card a[data-v-7fff1b57] {\n  position: absolute;\n  border-radius: 15px;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  z-index: 10;\n  background-color: rgba(40, 45, 111, 0.2);\n  display: flex;\n  flex-direction: column;\n  justify-content: flex-start;\n  align-items: flex-end;\n}\ndiv .card a button[data-v-7fff1b57] {\n  transition-duration: 0.3s;\n  margin: 18px;\n  z-index: 20;\n  width: 60px;\n  height: 35px;\n  border-radius: 5px;\n  font-size: 14px;\n  background-color: white;\n}\ndiv .card ul[data-v-7fff1b57] {\n  padding: 0;\n  margin: 0;\n  width: 85%;\n  height: 85%;\n  display: flex;\n  list-style-type: none;\n  flex-direction: row;\n  flex-wrap: wrap;\n}\n.product_action_liked[data-v-7fff1b57] {\n  background-color: #d3344e !important;\n  transition-duration: 0.3s;\n  color: white;\n}\n.product_action_liked i[data-v-7fff1b57] {\n  color: white;\n}\n.v-enter-active[data-v-7fff1b57],\n.v-leave-active[data-v-7fff1b57] {\n  transition: opacity 0.3s;\n}\n.v-enter[data-v-7fff1b57], .v-leave-to[data-v-7fff1b57] {\n  opacity: 0;\n}", ""]);
 
 // exports
 
@@ -4254,7 +4301,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "p[data-v-63cd6604] {\n  color: #282D6F;\n}\nlabel[data-v-63cd6604] {\n  color: #282D6F;\n}\nli[data-v-63cd6604] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-63cd6604] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-63cd6604] {\n  border: none;\n  background: none;\n}\nbutton[data-v-63cd6604] {\n  border: none;\n  background: none;\n}\ni[data-v-63cd6604] {\n  color: #282D6F;\n}\n.heartIcon[data-v-63cd6604] {\n  color: #d3344e;\n}\nh2[data-v-63cd6604] {\n  color: #282D6F;\n}\n.Home[data-v-63cd6604] {\n  margin: 0 auto;\n  margin-top: 0;\n  display: flex;\n  width: 100%;\n  justify-content: center;\n}\n.productsList[data-v-63cd6604] {\n  margin-top: 30px;\n  display: flex;\n  flex-flow: row wrap;\n}", ""]);
+exports.push([module.i, "p[data-v-63cd6604] {\n  color: #282D6F;\n  margin: 0;\n}\nlabel[data-v-63cd6604] {\n  color: #282D6F;\n}\nli[data-v-63cd6604] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-63cd6604] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-63cd6604] {\n  border: none;\n  background: none;\n}\ninput[data-v-63cd6604]:focus {\n  outline: none;\n}\ntextarea[data-v-63cd6604] {\n  border: none;\n  background: none;\n}\ntextarea[data-v-63cd6604]:focus {\n  outline: none;\n}\nbutton[data-v-63cd6604] {\n  border: none;\n  background: none;\n}\nbutton[data-v-63cd6604]:focus {\n  outline: none;\n}\ni[data-v-63cd6604] {\n  color: #282D6F;\n}\n.heartIcon[data-v-63cd6604] {\n  color: #d3344e;\n}\nh2[data-v-63cd6604] {\n  color: #282D6F;\n  margin: 0;\n}\nh1[data-v-63cd6604] {\n  color: #282D6F;\n  margin: 0;\n  font-size: 25px;\n  font-weight: bold;\n}\n.thumbnail[data-v-63cd6604] {\n  border-radius: 50%;\n}\n.Home[data-v-63cd6604] {\n  margin: 0 auto;\n  margin-top: 0;\n  display: flex;\n  width: 100%;\n  justify-content: center;\n}\n.productsList[data-v-63cd6604] {\n  margin-top: 30px;\n  display: flex;\n  flex-flow: row wrap;\n  align-content: flex-start;\n}", ""]);
 
 // exports
 
@@ -4273,7 +4320,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "p[data-v-12f5395a] {\n  color: #282D6F;\n}\nlabel[data-v-12f5395a] {\n  color: #282D6F;\n}\nli[data-v-12f5395a] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-12f5395a] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-12f5395a] {\n  border: none;\n  background: none;\n}\nbutton[data-v-12f5395a] {\n  border: none;\n  background: none;\n}\ni[data-v-12f5395a] {\n  color: #282D6F;\n}\n.heartIcon[data-v-12f5395a] {\n  color: #d3344e;\n}\nh2[data-v-12f5395a] {\n  color: #282D6F;\n}\n.login[data-v-12f5395a] {\n  margin: 0 auto;\n  width: 500px;\n  padding: 30px 0;\n}\n.tab[data-v-12f5395a] {\n  width: 100%;\n  height: 85px;\n  border-bottom: solid 2px #282D6F;\n  margin: 0;\n  padding: 0;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  text-align: center;\n}\n.tab li[data-v-12f5395a] {\n  font-size: 18px;\n  border-left: solid 1px #282D6F;\n  width: 50%;\n  height: 65%;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.tab li[data-v-12f5395a]:first-child {\n  border-left: none;\n}\n.tab li p[data-v-12f5395a] {\n  display: inline-block;\n  margin: 0;\n}\n.tab_item-nonactive[data-v-12f5395a] {\n  transition-duration: 0.4s;\n  border-bottom: solid 1.2px rgba(40, 45, 111, 0);\n}\n.tab_item-active[data-v-12f5395a] {\n  transition-duration: 0.4s;\n  border-bottom: solid 1.2px #282D6F;\n}\n.panel p[data-v-12f5395a] {\n  text-align: center;\n  font-size: 18px;\n  margin: 20px 0 0 0;\n}\n.form[data-v-12f5395a] {\n  display: flex;\n  flex-flow: nowrap column;\n  align-items: center;\n}\n.form label[data-v-12f5395a] {\n  margin-top: 23px;\n  width: 100%;\n  font-size: 16px;\n}\n.form input[data-v-12f5395a] {\n  width: 100%;\n  height: 32px;\n  border-bottom: solid 1px #282D6F;\n}\n.form button[data-v-12f5395a] {\n  transition-duration: 0.3s;\n  width: 200px;\n  height: 50px;\n  border: solid 1.5px #282D6F;\n  border-radius: 30px;\n  margin-top: 30px;\n  font-size: 20px;\n  font-weight: bold;\n  color: #282D6F;\n}\n.form button[data-v-12f5395a]:hover {\n  transition-duration: 0.3s;\n  background-color: #282D6F;\n  color: white;\n}", ""]);
+exports.push([module.i, "p[data-v-12f5395a] {\n  color: #282D6F;\n  margin: 0;\n}\nlabel[data-v-12f5395a] {\n  color: #282D6F;\n}\nli[data-v-12f5395a] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-12f5395a] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-12f5395a] {\n  border: none;\n  background: none;\n}\ninput[data-v-12f5395a]:focus {\n  outline: none;\n}\ntextarea[data-v-12f5395a] {\n  border: none;\n  background: none;\n}\ntextarea[data-v-12f5395a]:focus {\n  outline: none;\n}\nbutton[data-v-12f5395a] {\n  border: none;\n  background: none;\n}\nbutton[data-v-12f5395a]:focus {\n  outline: none;\n}\ni[data-v-12f5395a] {\n  color: #282D6F;\n}\n.heartIcon[data-v-12f5395a] {\n  color: #d3344e;\n}\nh2[data-v-12f5395a] {\n  color: #282D6F;\n  margin: 0;\n}\nh1[data-v-12f5395a] {\n  color: #282D6F;\n  margin: 0;\n  font-size: 25px;\n  font-weight: bold;\n}\n.thumbnail[data-v-12f5395a] {\n  border-radius: 50%;\n}\n.login[data-v-12f5395a] {\n  margin: 0 auto;\n  width: 500px;\n  padding: 30px 0;\n}\n.tab[data-v-12f5395a] {\n  width: 100%;\n  height: 85px;\n  border-bottom: solid 2px #282D6F;\n  margin: 0;\n  padding: 0;\n  display: flex;\n  align-items: center;\n  justify-content: space-between;\n  text-align: center;\n}\n.tab li[data-v-12f5395a] {\n  font-size: 18px;\n  border-left: solid 1px #282D6F;\n  width: 50%;\n  height: 65%;\n  display: flex;\n  justify-content: center;\n  align-items: center;\n}\n.tab li[data-v-12f5395a]:first-child {\n  border-left: none;\n}\n.tab li p[data-v-12f5395a] {\n  display: inline-block;\n  margin: 0;\n}\n.tab_item-nonactive[data-v-12f5395a] {\n  transition-duration: 0.4s;\n  border-bottom: solid 1.2px rgba(40, 45, 111, 0);\n}\n.tab_item-active[data-v-12f5395a] {\n  transition-duration: 0.4s;\n  border-bottom: solid 1.2px #282D6F;\n}\n.panel p[data-v-12f5395a] {\n  text-align: center;\n  font-size: 18px;\n  margin: 20px 0 0 0;\n}\n.form[data-v-12f5395a] {\n  display: flex;\n  flex-flow: nowrap column;\n  align-items: center;\n}\n.form label[data-v-12f5395a] {\n  margin-top: 23px;\n  width: 100%;\n  font-size: 16px;\n}\n.form input[data-v-12f5395a] {\n  width: 100%;\n  height: 32px;\n  border-bottom: solid 1px #282D6F;\n}\n.form button[data-v-12f5395a] {\n  transition-duration: 0.3s;\n  width: 200px;\n  height: 50px;\n  border: solid 1.5px #282D6F;\n  border-radius: 30px;\n  margin-top: 30px;\n  font-size: 20px;\n  font-weight: bold;\n  color: #282D6F;\n}\n.form button[data-v-12f5395a]:hover {\n  transition-duration: 0.3s;\n  background-color: #282D6F;\n  color: white;\n}", ""]);
 
 // exports
 
@@ -4330,7 +4377,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "p[data-v-153e0c5b] {\n  color: #282D6F;\n}\nlabel[data-v-153e0c5b] {\n  color: #282D6F;\n}\nli[data-v-153e0c5b] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-153e0c5b] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-153e0c5b] {\n  border: none;\n  background: none;\n}\nbutton[data-v-153e0c5b] {\n  border: none;\n  background: none;\n}\ni[data-v-153e0c5b] {\n  color: #282D6F;\n}\n.heartIcon[data-v-153e0c5b] {\n  color: #d3344e;\n}\nh2[data-v-153e0c5b] {\n  color: #282D6F;\n}\n.userDetail[data-v-153e0c5b] {\n  margin: 0 auto;\n  margin-top: 0;\n  display: flex;\n  flex-flow: column;\n  width: 100%;\n  align-items: center;\n}\n.userInformation[data-v-153e0c5b] {\n  width: 900px;\n}\n.productsList[data-v-153e0c5b] {\n  margin-top: 30px;\n  display: flex;\n  flex-flow: row wrap;\n}", ""]);
+exports.push([module.i, "p[data-v-153e0c5b] {\n  color: #282D6F;\n  margin: 0;\n}\nlabel[data-v-153e0c5b] {\n  color: #282D6F;\n}\nli[data-v-153e0c5b] {\n  color: #282D6F;\n  list-style: none;\n}\na[data-v-153e0c5b] {\n  color: #282D6F;\n  text-decoration: none;\n}\ninput[data-v-153e0c5b] {\n  border: none;\n  background: none;\n}\ninput[data-v-153e0c5b]:focus {\n  outline: none;\n}\ntextarea[data-v-153e0c5b] {\n  border: none;\n  background: none;\n}\ntextarea[data-v-153e0c5b]:focus {\n  outline: none;\n}\nbutton[data-v-153e0c5b] {\n  border: none;\n  background: none;\n}\nbutton[data-v-153e0c5b]:focus {\n  outline: none;\n}\ni[data-v-153e0c5b] {\n  color: #282D6F;\n}\n.heartIcon[data-v-153e0c5b] {\n  color: #d3344e;\n}\nh2[data-v-153e0c5b] {\n  color: #282D6F;\n  margin: 0;\n}\nh1[data-v-153e0c5b] {\n  color: #282D6F;\n  margin: 0;\n  font-size: 25px;\n  font-weight: bold;\n}\n.thumbnail[data-v-153e0c5b] {\n  border-radius: 50%;\n}\n.userDetail[data-v-153e0c5b] {\n  margin: 0 auto;\n  margin-top: 0;\n  display: flex;\n  flex-flow: column;\n  width: 100%;\n  align-items: center;\n}\n.userInformation[data-v-153e0c5b] {\n  width: 850px;\n  padding-top: 30px;\n  display: flex;\n}\n.userInformation div[data-v-153e0c5b] {\n  margin-left: 20px;\n}\n.productsList[data-v-153e0c5b] {\n  margin-top: 30px;\n  display: flex;\n  flex-flow: row wrap;\n  align-content: flex-start;\n}\n.thumbnail[data-v-153e0c5b] {\n  width: 130px;\n  height: 130px;\n}", ""]);
 
 // exports
 
@@ -4349,7 +4396,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "ul[data-v-065b2db7] {\n  margin: 0;\n}", ""]);
+exports.push([module.i, "ul[data-v-065b2db7] {\n  margin: 0;\n  padding: 40px 0;\n  display: flex;\n  flex-flow: column;\n  align-items: center;\n}\nli[data-v-065b2db7] {\n  width: 810px;\n  display: flex;\n  justify-content: space-between;\n  align-items: center;\n  margin-top: 30px;\n}\nli[data-v-065b2db7]:first-child {\n  margin-top: 0;\n}\nli a[data-v-065b2db7] {\n  width: 130px;\n  height: 130px;\n}\n.thumbnail[data-v-065b2db7] {\n  width: 100%;\n  height: 100%;\n}\n.userInformation[data-v-065b2db7] {\n  margin-left: 3%;\n  width: 230px;\n  display: flex;\n  flex-flow: column;\n  padding: 10px 0;\n  align-items: flex-start;\n}\n.productsList[data-v-065b2db7] {\n  width: 400px;\n  display: flex;\n  flex-flow: row wrap;\n  align-items: center;\n}", ""]);
 
 // exports
 
@@ -7042,20 +7089,25 @@ var render = function() {
             ? _c(
                 "router-link",
                 {
-                  staticClass: "navbar__item",
+                  staticClass: "navbar__item myacount",
                   attrs: { to: "/users/" + _vm.userid }
                 },
-                [_vm._v(_vm._s(_vm.username))]
+                [
+                  _c("p", [_vm._v(_vm._s(_vm.username))]),
+                  _vm._v(" "),
+                  _vm.isLogin
+                    ? _c("figure", [
+                        _c("img", {
+                          staticClass: "thumbnail",
+                          attrs: {
+                            src: _vm.thumbnail,
+                            alt: _vm.username + "のサムネイル"
+                          }
+                        })
+                      ])
+                    : _vm._e()
+                ]
               )
-            : _vm._e(),
-          _vm._v(" "),
-          _vm.isLogin
-            ? _c("figure", { staticClass: "navbar__item" }, [
-                _c("img", {
-                  staticClass: "thumbnail",
-                  attrs: { src: _vm.thumbnail, alt: "${username}のサムネイル" }
-                })
-              ])
             : _c(
                 "div",
                 { staticClass: "navbar__item" },
@@ -7479,26 +7531,30 @@ var render = function() {
                 attrs: { to: "/products/" + _vm.product.id }
               },
               [
-                _c(
-                  "button",
-                  {
-                    class: { product_action_liked: _vm.product.liked_by_user },
-                    on: {
-                      click: function($event) {
-                        $event.preventDefault()
-                        return _vm.like($event)
-                      }
-                    }
-                  },
-                  [
-                    _c("i", { staticClass: "fas fa-heart heartIcon" }),
-                    _vm._v(
-                      "\n          " +
-                        _vm._s(_vm.product.likes_count) +
-                        "\n        "
+                _vm.appearLike
+                  ? _c(
+                      "button",
+                      {
+                        class: {
+                          product_action_liked: _vm.product.liked_by_user
+                        },
+                        on: {
+                          click: function($event) {
+                            $event.preventDefault()
+                            return _vm.like($event)
+                          }
+                        }
+                      },
+                      [
+                        _c("i", { staticClass: "fas fa-heart heartIcon" }),
+                        _vm._v(
+                          "\n          " +
+                            _vm._s(_vm.product.likes_count) +
+                            "\n        "
+                        )
+                      ]
                     )
-                  ]
-                )
+                  : _vm._e()
               ]
             )
           ],
@@ -7580,7 +7636,11 @@ var render = function() {
         _vm._l(_vm.products, function(product) {
           return _c("Product", {
             key: product.id,
-            attrs: { product: product, productstyle: _vm.productStyle },
+            attrs: {
+              product: product,
+              appearLike: true,
+              productstyle: _vm.productStyle
+            },
             on: { like: _vm.onLikeClick }
           })
         }),
@@ -8142,10 +8202,22 @@ var render = function() {
     { staticClass: "userDetail" },
     [
       _c("div", { staticClass: "userInformation" }, [
-        _c("p", { staticClass: "username" }, [_vm._v(_vm._s(_vm.user.name))]),
+        _c("img", {
+          staticClass: "thumbnail",
+          attrs: {
+            src: _vm.user.thumbnail,
+            alt: _vm.user.name + "のサムネイル"
+          }
+        }),
         _vm._v(" "),
-        _c("p", { staticClass: "userintroduction" }, [
-          _vm._v(_vm._s(_vm.user.introduction))
+        _c("div", [
+          _c("h2", { staticClass: "username" }, [
+            _vm._v(_vm._s(_vm.user.name))
+          ]),
+          _vm._v(" "),
+          _c("p", { staticClass: "userintroduction" }, [
+            _vm._v(_vm._s(_vm.user.introduction))
+          ])
         ])
       ]),
       _vm._v(" "),
@@ -8155,7 +8227,11 @@ var render = function() {
         _vm._l(_vm.products, function(product) {
           return _c("Product", {
             key: product.id,
-            attrs: { product: product, productstyle: _vm.productStyle }
+            attrs: {
+              product: product,
+              appearLike: true,
+              productstyle: _vm.productStyle
+            }
           })
         }),
         1
@@ -8196,7 +8272,42 @@ var render = function() {
       _c(
         "ul",
         _vm._l(_vm.users, function(user) {
-          return _c("li", { key: user.id }, [_vm._v(_vm._s(user.name))])
+          return _c(
+            "li",
+            { key: user.id },
+            [
+              _c("router-link", { attrs: { to: "/users/" + user.id } }, [
+                _c("img", {
+                  staticClass: "thumbnail",
+                  attrs: {
+                    src: user.userthumbnail.url,
+                    alt: user.name + "のサムネイル"
+                  }
+                })
+              ]),
+              _vm._v(" "),
+              _c("div", { staticClass: "userInformation" }, [
+                _c("h1", [_vm._v(_vm._s(user.name))]),
+                _vm._v(" "),
+                _c("p", [_vm._v(_vm._s(user.introduction))]),
+                _vm._v(" "),
+                _vm.isLogin ? _c("div", [_vm._v("フォローする")]) : _vm._e()
+              ]),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "productsList" },
+                _vm._l(user.products, function(product) {
+                  return _c("Product", {
+                    key: product.id,
+                    attrs: { product: product, productstyle: _vm.productStyle }
+                  })
+                }),
+                1
+              )
+            ],
+            1
+          )
         }),
         0
       ),
@@ -25796,7 +25907,7 @@ var getters = {
     return state.user ? state.user.name : '';
   },
   thumbnail: function thumbnail(state) {
-    return state.user.thumbnail ? state.user.thumbnail.url : '';
+    return state.user.userthumbnail ? state.user.userthumbnail.url : '';
   },
   userid: function userid(state) {
     return state.user ? state.user.id : '';
@@ -25866,7 +25977,7 @@ var actions = {
   },
   login: function login(context, data) {
     return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-      var response;
+      var login, response, user;
       return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
@@ -25876,18 +25987,24 @@ var actions = {
               return axios.post('/api/login', data);
 
             case 3:
+              login = _context2.sent;
+              _context2.next = 6;
+              return axios.get('/api/user');
+
+            case 6:
               response = _context2.sent;
+              user = response.data || null;
 
               if (!(response.status === _util__WEBPACK_IMPORTED_MODULE_2__["OK"])) {
-                _context2.next = 8;
+                _context2.next = 12;
                 break;
               }
 
               context.commit('setApiStatus', true);
-              context.commit('setUser', response.data);
+              context.commit('setUser', user);
               return _context2.abrupt("return", false);
 
-            case 8:
+            case 12:
               context.commit('setApiStatus', false);
 
               if (response.status === _util__WEBPACK_IMPORTED_MODULE_2__["UNPROCESSABLE_ENTITY"]) {
@@ -25898,7 +26015,7 @@ var actions = {
                 });
               }
 
-            case 10:
+            case 14:
             case "end":
               return _context2.stop();
           }

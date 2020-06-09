@@ -123,7 +123,7 @@ export default {
       if (!response.data.products.length == 0) {
         this.currentProduct = 1;
         for (let i = 0; i < response.data.products.length; i++) {
-          this.productionList.push(response.data.product[i]);
+          this.productionList.push(response.data.products[i]);
           this.productionList[i].myproductid = i + 1;
         }
         this.id = this.productionList.length + 1;
