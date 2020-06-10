@@ -7,6 +7,7 @@
         <p class="userintroduction">{{user.introduction}}</p>
       </div>
     </div>
+    <h2>投稿一覧</h2>
     <div class="productsList" :style="style">
       <Product
         v-for="product in products"
@@ -115,8 +116,10 @@ export default {
     margin-left: 20px;
   }
 }
+h2 {
+  margin-bottom: 10px;
+}
 .productsList {
-  margin-top: 30px;
   display: flex;
   flex-flow: row wrap;
   align-content: flex-start;

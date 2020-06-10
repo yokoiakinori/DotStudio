@@ -31,15 +31,21 @@
     <li id="createProduction" @click="modalToggle">
       <span>＋</span>ここをクリックで新規作成
     </li>
+    <li class="pagination">
+      <Pagination :current-page="currentPage" :last-page="lastPage" routerPath="/drawing" />
+    </li>
   </ul>
 </template>
 
 <script>
 import ModalWindow from '../ModalWindow.vue';
+import Pagination from '../Pagination.vue';
 import Axios from 'axios';
+import { OK } from '../../util';
 export default {
   components: {
     ModalWindow,
+    Pagination,
   },
   computed: {
     alldot: function() {
@@ -55,16 +61,16 @@ export default {
       id: 0,
       productname: '',
       linedot: 0,
+      currentPage: 0,
+      lastPage: 0,
       productionList: [],
       currentProduct: 0,
     };
   },
-  created: function() {
-    this.showProductsList();
-  },
   watch: {
     currentProduct: function(val) {
-      const current = this.productionList[val - 1];
+      const currentProductNumber = val - (this.$route.query.page - 1) * 3;
+      const current = this.productionList[currentProductNumber - 1];
       this.$store.commit('maincanvas/setCurrentProduct', {
         alldot: current.alldot,
         linedot: current.linedot,
@@ -73,13 +79,8 @@ export default {
     },
     $route: {
       async handler() {
-        this.id = 0;
-        this.$store.commit('maincanvas/setCurrentProduct', {
-          alldot: 900,
-          linedot: 30,
-          id: 0,
-        });
         await this.reset();
+        await this.showProductsList();
       },
       immediate: true,
     },
@@ -97,6 +98,10 @@ export default {
           linedot: Number(this.linedot),
         });
         const response = await axios.post('/api/products', this.productionList[this.id - 1]);
+        if (response.status !== OK) {
+          this.$store.commit('error/setCode', response.status);
+          return false;
+        }
         this.productionList[this.id - 1].id = response.data.id;
         this.productionList[this.id - 1].myproductid = this.id;
       } else {
@@ -119,12 +124,13 @@ export default {
       this.modalWindow = !this.modalWindow;
     },
     async showProductsList() {
-      const response = await axios.get('/api/products');
-      if (!response.data.products.length == 0) {
-        this.currentProduct = 1;
-        for (let i = 0; i < response.data.products.length; i++) {
-          this.productionList.push(response.data.products[i]);
-          this.productionList[i].myproductid = i + 1;
+      this.productionList.length = 0;
+      const response = await axios.get(`/api/products?page=${this.$route.query.page}`);
+      if (!response.data.data.length == 0) {
+        this.currentProduct = (this.$route.query.page - 1) * 3 + 1;
+        for (let i = 0; i < response.data.data.length; i++) {
+          this.productionList.push(response.data.data[i]);
+          this.productionList[i].myproductid = i + (this.$route.query.page - 1) * 3 + 1;
         }
         this.id = this.productionList.length + 1;
         this.$store.commit('maincanvas/setCurrentProduct', {
@@ -133,6 +139,8 @@ export default {
           id: this.productionList[0].id,
         });
       }
+      this.currentPage = response.data.current_page;
+      this.lastPage = response.data.last_page;
     },
     productSave() {
       this.$store.commit('maincanvas/productSave');
@@ -150,7 +158,7 @@ export default {
 @import '../../../sass/common.scss';
 ul {
   width: 100%;
-  height: 220px;
+  height: 260px;
   margin: 0;
   padding: 0;
   display: flex;
@@ -161,16 +169,14 @@ ul {
 li {
   font-size: 18px;
   width: 100%;
-  height: 25%;
+  height: 20%;
   list-style: none;
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  border-bottom: solid 1.2px $maincolor;
+  border-top: solid 1.2px $maincolor;
   transition-duration: 0.3s;
-  &:first-child {
-    border-top: solid 1.2px $maincolor;
-  }
+
   span {
     margin: 0 20px;
   }

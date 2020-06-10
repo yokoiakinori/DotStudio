@@ -36,7 +36,7 @@ class ProductController extends Controller
 	public function list(Request $request)
 	{
 		$userid = Auth::id();
-		$list = User::with('products')->find($userid)->toArray();
+		$list = Product::where('user_id', $userid)->orderBy('created_at', 'asc')->paginate(3);
 		return response($list, 200);
 	}
 

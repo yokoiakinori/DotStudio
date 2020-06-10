@@ -12,6 +12,12 @@ use PhpParser\Node\Expr\Cast\String_;
 
 class UserController extends Controller
 {
+	public function __construct()
+	{
+		// 認証が必要
+		$this->middleware('auth')->only(['myacount']);
+	}
+
 	public function myacount()
 	{
 		$thumbnail = Auth::user()->userthumbnail;

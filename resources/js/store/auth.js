@@ -15,7 +15,7 @@ const state = {
 const getters = {
 	check: state => !!state.user,
 	username: state => state.user ? state.user.name : '',
-	thumbnail: state => state.user.userthumbnail ? state.user.userthumbnail.url : '',
+	thumbnail: state => state.user ? state.user.userthumbnail.url : '',
 	userid: state => state.user ? state.user.id : ''
 };
 

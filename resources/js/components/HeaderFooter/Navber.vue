@@ -13,7 +13,7 @@
         <router-link to="/userslist" @click="reset">ユーザー</router-link>
       </div>
       <div v-if="isLogin" class="navbar__item">
-        <router-link to="/drawing" @click="reset">
+        <router-link to="/drawing?page=1" @click="reset">
           <div class="drawing_link">
             <i class="fas fa-paint-brush"></i>イラストを描く
           </div>

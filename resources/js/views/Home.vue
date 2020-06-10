@@ -10,7 +10,7 @@
         :productstyle="productStyle"
       />
     </div>
-    <Pagination :current-page="currentPage" :last-page="lastPage" />
+    <Pagination :current-page="currentPage" :last-page="lastPage" routerPath="/" />
   </div>
 </template>
 
@@ -126,7 +126,8 @@ export default {
   margin-top: 0;
   display: flex;
   width: 100%;
-  justify-content: center;
+  align-items: center;
+  flex-flow: column;
 }
 .productsList {
   margin-top: 30px;
