@@ -16,7 +16,8 @@ const getters = {
 	check: state => !!state.user,
 	username: state => state.user ? state.user.name : '',
 	thumbnail: state => state.user ? state.user.userthumbnail.url : '',
-	userid: state => state.user ? state.user.id : ''
+	userid: state => state.user ? state.user.id : '',
+	followees: state => state.user ? state.user.followers : '',
 };
 
 const mutations = {
@@ -39,10 +40,12 @@ const actions = {
 		context.commit('setApiStatus', null);
 		const response1 = await axios.post('/api/register', data);
 		const response2 = await axios.post('/api/thumbnail');
+		const response = await axios.get('/api/user');
+		const user = response.data || null;
 
 		if (response1.status === CREATED) {
 			context.commit('setApiStatus', true);
-			context.commit('setUser', response1.data);
+			context.commit('setUser', user);
 			return false;
 		}
 
@@ -109,7 +112,7 @@ const actions = {
 		context.commit('error/setCode', response.status, {
 			root: true
 		});
-	}
+	},
 };
 
 export default {

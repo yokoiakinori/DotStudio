@@ -24,10 +24,11 @@ class UserListApiTest extends TestCase
 
 		$expected_data = $users->map(function ($user) {
 			return [
-				'email' => $user->email,
 				'name' => $user->name,
 				'id' => $user->id,
-				'introduction' => 'よろしくお願いします。'
+				'introduction' => 'よろしくお願いします。',
+				'products' => [],
+				'userthumbnail' => null
 			];
 		})
 			->all();

@@ -110,7 +110,6 @@ div {
         width: 60px;
         height: 35px;
         border-radius: 5px;
-        font-size: 14px;
         background-color: white;
       }
     }

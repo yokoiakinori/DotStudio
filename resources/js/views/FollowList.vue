@@ -18,6 +18,10 @@ export default {
     UserListItem,
   },
   props: {
+    id: {
+      type: String,
+      required: true,
+    },
     page: {
       type: Number,
       required: false,
@@ -34,14 +38,25 @@ export default {
   },
   methods: {
     async showUsers() {
-      const response = await axios.get(`/api/users/list/?page=${this.page}`);
-      if (response.status !== OK) {
-        this.$store.commit('error/setCode', response.status);
-        return false;
+      if (this.$route.name === 'follow') {
+        const response = await axios.get(`/api/user/${this.id}/followlist/?page=${this.page}`);
+        if (response.status !== OK) {
+          this.$store.commit('error/setCode', response.status);
+          return false;
+        }
+        this.users = response.data.data;
+        this.currentPage = response.data.current_page;
+        this.lastPage = response.data.last_page;
+      } else {
+        const response = await axios.get(`/api/user/${this.id}/followerlist/?page=${this.page}`);
+        if (response.status !== OK) {
+          this.$store.commit('error/setCode', response.status);
+          return false;
+        }
+        this.users = response.data.data;
+        this.currentPage = response.data.current_page;
+        this.lastPage = response.data.last_page;
       }
-      this.users = response.data.data;
-      this.currentPage = response.data.current_page;
-      this.lastPage = response.data.last_page;
     },
   },
   watch: {

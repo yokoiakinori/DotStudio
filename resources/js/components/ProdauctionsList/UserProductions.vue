@@ -92,12 +92,13 @@ export default {
     },
     async createProduction() {
       if (!this.id == 0) {
-        this.productionList.push({
+        const createProduct = {
           productname: this.productname,
           alldot: Number(this.alldot),
           linedot: Number(this.linedot),
-        });
-        const response = await axios.post('/api/products', this.productionList[this.id - 1]);
+        };
+        const response = await axios.post('/api/products', createProduct);
+        this.productionList.push(response);
         if (response.status !== OK) {
           this.$store.commit('error/setCode', response.status);
           return false;
@@ -105,12 +106,12 @@ export default {
         this.productionList[this.id - 1].id = response.data.id;
         this.productionList[this.id - 1].myproductid = this.id;
       } else {
-        this.productionList.push({
+        const createProduct = {
           productname: this.productname,
           alldot: Number(this.alldot),
           linedot: Number(this.linedot),
-        });
-        const response = await axios.post('/api/products', this.productionList[this.id]);
+        };
+        const response = await axios.post('/api/products', createProduct);
         this.productionList[0].id = response.data.id;
         this.productionList[0].myproductid = 1;
         this.id++;

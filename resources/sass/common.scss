@@ -43,6 +43,8 @@ textarea {
 button {
 	border: none;
 	background: none;
+	font-size: 14px;
+	color: $maincolor;
 
 	&:focus {
 		outline: none;

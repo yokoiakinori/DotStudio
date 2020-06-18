@@ -5,6 +5,8 @@ namespace App;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Auth;
+use App\Follower;
 
 class User extends Authenticatable
 {
@@ -25,7 +27,7 @@ class User extends Authenticatable
 	 * @var array
 	 */
 	protected $visible = [
-		'name', 'introduction', 'id', 'userthumbnail', 'products'
+		'name', 'introduction', 'id', 'userthumbnail', 'products', 'followers'
 	];
 
 	/**
@@ -45,5 +47,15 @@ class User extends Authenticatable
 	public function userthumbnail()
 	{
 		return $this->hasOne('App\Userthumbnail');
+	}
+
+	public function likes()
+	{
+		return $this->hasMany('App\Like')->orderBy('created_at', 'asc');
+	}
+
+	public function followers()
+	{
+		return $this->hasMany('App\Follower')->orderBy('created_at', 'asc');
 	}
 }

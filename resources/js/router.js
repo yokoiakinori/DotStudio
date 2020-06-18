@@ -7,7 +7,7 @@ import Login from './views/Login.vue'
 import ProductDetail from './views/ProductDetail.vue'
 import UsersList from './views/UsersList.vue'
 import UserDetail from './views/UserDetail.vue'
-import Friends from './views/Friends.vue'
+import FollowList from './views/FollowList.vue'
 import Notification from './views/Notification.vue'
 import System from './views/errors/System.vue'
 import NotFound from './views/errors/NotFound.vue'
@@ -78,16 +78,16 @@ const router = new VueRouter({
 			props: true,
 		},
 		{
-			path: '/friends',
-			component: Friends,
-			beforeEnter(to, from, next) {
-				if (store.getters['auth/check']) {
-					next()
-				} else {
-					next('/login')
-				}
-			},
+			path: '/follow/:id',
+			component: FollowList,
 			props: true,
+			name: 'follow'
+		},
+		{
+			path: '/follower/:id',
+			component: FollowList,
+			props: true,
+			name: 'follower'
 		},
 		{
 			path: '/notification',

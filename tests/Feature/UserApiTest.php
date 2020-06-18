@@ -10,37 +10,26 @@ use Tests\TestCase;
 
 class UserApiTest extends TestCase
 {
-    use RefreshDatabase;
+	use RefreshDatabase;
 
-    public function setUp(): void
-    {
-        parent::setUp();
+	public function setUp(): void
+	{
+		parent::setUp();
 
-        $this->user = factory(User::class)->create();
-    }
-    
-    /**
-     * @test
-     */
-    public function should_loggedUserback()
-    {
-        $response = $this->actingAs($this->user)->json('GET', route('user'));
+		$this->user = factory(User::class)->create();
+	}
 
-        $response
-            ->assertStatus(200)
-            ->assertJson([
-                'name' => $this->user->name,
-            ]);
-    }
+	/**
+	 * @test
+	 */
+	public function should_loggedUserback()
+	{
+		$response = $this->actingAs($this->user)->json('GET', route('user'));
 
-    /**
-     * @test
-     */
-    public function should_nonloginNull()
-    {
-        $response = $this->json('GET', route('user'));
-
-        $response->assertStatus(200);
-        $this->assertEquals("", $response->content());
-    }
+		$response
+			->assertStatus(200)
+			->assertJson([
+				'name' => $this->user->name,
+			]);
+	}
 }

@@ -23,8 +23,9 @@ class UserProductsListApiTest extends TestCase
 		$response = $this->json('GET', route('user.products', [
 			'id' => $userid,
 		]));
+		$product = Product::where('user_id', $userid)->first();
 
 		$response->assertStatus(200)
-			->assertJson(['data' => [0 => ['user_id' => $userid]]]);
+			->assertJsonFragment(['id' => $product->id]);
 	}
 }

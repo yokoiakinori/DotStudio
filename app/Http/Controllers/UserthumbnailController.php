@@ -7,6 +7,7 @@ use App\Userthumbnail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class UserthumbnailController extends Controller
@@ -39,9 +40,11 @@ class UserthumbnailController extends Controller
 	{
 		$userthumbnail = new Userthumbnail();
 		$userthumbnail->filename = $userthumbnail->filestring . '.png';
+		Log::debug($userthumbnail);
 		Auth::user()->userthumbnail()->save($userthumbnail);
 		return response($userthumbnail, 201);
 	}
+
 	public function update(StoreThumbnail $request)
 	{
 		$extension = $request->userthumbnail->extension();
