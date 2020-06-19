@@ -32,6 +32,9 @@ const mutations = {
 	},
 	setRegisterErrorMessages(state, messages) {
 		state.registerErrorMessages = messages;
+	},
+	updateUser(state, user) {
+		state.user.name = user.name
 	}
 };
 

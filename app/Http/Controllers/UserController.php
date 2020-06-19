@@ -57,6 +57,15 @@ class UserController extends Controller
 		$currentuser = $user->concat([$followerCount])->concat([$followeeCount]);
 		return $currentuser;
 	}
+
+	public function updateuser(Request $request)
+	{
+		$userid = Auth::id();
+		$user = User::where('id', $userid)->first();
+		$user->fill($request->all())->save();
+		return $user;
+	}
+
 	public function follow(String $id)
 	{
 		$userid = Auth::id();

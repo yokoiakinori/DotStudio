@@ -24,7 +24,7 @@ class StoreThumbnail extends FormRequest
 	public function rules()
 	{
 		return [
-			'userthumbnail' => 'required|file|mimes:jpg,jpeg,png|max:300'
+			'userthumbnail' => 'required|file|mimes:jpg,jpeg,png|max:600'
 		];
 	}
 }

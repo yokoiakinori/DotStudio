@@ -68,4 +68,12 @@ button {
   background-color: $maincolor;
   color: white;
 }
+.previewImage {
+}
+img {
+  width: 424px;
+  height: 424px;
+  object-fit: cover;
+  margin-bottom: 5px;
+}
 </style>

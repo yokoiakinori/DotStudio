@@ -26,6 +26,11 @@ input:focus {
   outline: none;
 }
 
+::-webkit-input-placeholder {
+  color: rgba(40, 45, 111, 0.6);
+  font-size: 12px;
+}
+
 textarea {
   border: none;
   background: none;
@@ -68,5 +73,20 @@ h1 {
 
 .thumbnail {
   border-radius: 50%;
+  -o-object-fit: cover;
+     object-fit: cover;
+}
+
+.formButton {
+  border: solid 1.5px #282D6F;
+  border-radius: 40px;
+  font-weight: bold;
+  color: #282D6F;
+}
+
+.formButton:hover {
+  transition-duration: 0.3s;
+  background-color: #282D6F;
+  color: white;
 }
 

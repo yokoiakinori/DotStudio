@@ -29,6 +29,7 @@ Route::get('/users/list', 'UserController@list')->name('user.list');
 Route::get('/users/products/{id}', 'UserController@products')->name('user.products');
 Route::get('/users/likeproducts/{id}', 'UserController@likeproducts')->name('user.likeproducts');
 Route::get('/users/{id}', 'UserController@currentuser')->name('user.current');
+Route::post('/userupdate', 'UserController@updateuser')->name('user.update');
 Route::post('/thumbnail', 'UserthumbnailController@create')->name('thumbnail.create');
 Route::post('/thumbnail/update', 'UserthumbnailController@update')->name('thumbnail.update');
 Route::post('/products', 'ProductController@create')->name('product.create');

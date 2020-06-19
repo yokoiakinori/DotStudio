@@ -57,9 +57,11 @@ class UserthumbnailController extends Controller
 
 		Storage::cloud()
 			->putFileAs('', $request->userthumbnail, $userthumbnail->filename, 'public');
+
 		DB::beginTransaction();
 		try {
 			Auth::user()->userthumbnail()->save($userthumbnail);
+			DB::commit();
 		} catch (\Exception $exception) {
 			DB::rollBack();
 			Storage::cloud()->delete($userthumbnail->filename);

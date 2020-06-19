@@ -1,22 +1,26 @@
 <template>
   <div class="userDetail">
     <div class="userInformation">
-      <img :src="user.thumbnail" :alt="`${user.name}のサムネイル`" class="thumbnail" />
-      <div>
+      <img :src="user.thumbnail" :alt="`${user.name}のサムネイル`" class="thumbnail infomationItem" />
+      <div class="infomationItem">
         <h2 class="username">{{user.name}}</h2>
         <p class="userintroduction">{{user.introduction}}</p>
-        <div>
-          <router-link :to="`/follow/${id}`">
-            フォロー
-            <span>{{user.followCount}}</span>
-          </router-link>
-          <router-link :to="`/follower/${id}`">
-            フォロワー
-            <span>{{user.followerCount}}</span>
-          </router-link>
-        </div>
       </div>
+      <div class="infomationItem">
+        <router-link :to="`/follow/${id}`">
+          フォロー
+          <span>{{user.followCount}}</span>
+        </router-link>
+        <router-link :to="`/follower/${id}`">
+          フォロワー
+          <span>{{user.followerCount}}</span>
+        </router-link>
+      </div>
+      <router-link :to="`/settings/${id}`" class="infomationItem" v-if="id==userid">
+        <i class="fas fa-cog"></i>
+      </router-link>
     </div>
+
     <ul class="tab">
       <li @click="tab = 1">
         <p :class="{'tab_item-active':tab === 1,'tab_item-nonactive':tab !== 1}">投稿作品</p>
@@ -82,6 +86,9 @@ export default {
         width: product,
         height: product,
       };
+    },
+    userid() {
+      return this.$store.getters['auth/userid'];
     },
   },
   methods: {
@@ -201,6 +208,9 @@ export default {
   div {
     margin-left: 20px;
   }
+}
+.infomationItem:last-child {
+  margin-left: auto;
 }
 h2 {
   margin-bottom: 10px;

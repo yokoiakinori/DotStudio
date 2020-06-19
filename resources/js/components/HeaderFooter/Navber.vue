@@ -92,10 +92,6 @@ export default {
     margin-left: 15px;
     width: 145px;
   }
-  ::-webkit-input-placeholder {
-    color: rgba($maincolor, 0.6);
-    font-size: 12px;
-  }
 }
 .navbar__item {
   margin: 10px;

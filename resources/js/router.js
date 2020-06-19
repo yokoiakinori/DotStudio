@@ -9,6 +9,7 @@ import UsersList from './views/UsersList.vue'
 import UserDetail from './views/UserDetail.vue'
 import FollowList from './views/FollowList.vue'
 import Notification from './views/Notification.vue'
+import UserSettings from './views/UserSettings.vue'
 import System from './views/errors/System.vue'
 import NotFound from './views/errors/NotFound.vue'
 
@@ -92,6 +93,18 @@ const router = new VueRouter({
 		{
 			path: '/notification',
 			component: Notification,
+			beforeEnter(to, from, next) {
+				if (store.getters['auth/check']) {
+					next()
+				} else {
+					next('/login')
+				}
+			},
+			props: true,
+		},
+		{
+			path: '/settings/:id',
+			component: UserSettings,
 			beforeEnter(to, from, next) {
 				if (store.getters['auth/check']) {
 					next()
