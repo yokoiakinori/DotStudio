@@ -53,6 +53,7 @@ button:focus {
 
 i {
   color: #282D6F;
+  transition-duration: 0.3s;
 }
 
 .heartIcon {
@@ -82,11 +83,23 @@ h1 {
   border-radius: 40px;
   font-weight: bold;
   color: #282D6F;
+  transition-duration: 0.3s;
 }
 
 .formButton:hover {
   transition-duration: 0.3s;
   background-color: #282D6F;
   color: white;
+}
+
+.formButton:hover i {
+  color: white;
+  transition-duration: 0.3s;
+}
+
+.pageTitle {
+  margin: 0 auto;
+  text-align: center;
+  padding: 20px 0;
 }
 

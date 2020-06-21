@@ -6,6 +6,7 @@ use App\Product;
 use Illuminate\Http\Request;
 use App\User;
 use App\Follower;
+use App\Notification;
 use App\Like;
 use App\Userthumbnail;
 use Illuminate\Support\Facades\Auth;
@@ -105,5 +106,27 @@ class UserController extends Controller
 			$query->get();
 		}, 'userthumbnail', 'followers'])->orderBy(User::CREATED_AT, 'desc')->paginate();
 		return $users;
+	}
+
+	public function notificationInput(Request $request)
+	{
+		$notification = new Notification();
+		$notification->opponent_id = Auth::id();
+		$notification->user_id = $request->id;
+		$notification->message = $request->message;
+		$notification->save();
+		return $notification;
+	}
+
+	public function notificationsList()
+	{
+		$id = Auth::id();
+		$notification = Notification::where('user_id', $id)->get();
+		return $notification;
+	}
+
+	public function notificationDelete(String $id)
+	{
+		Notification::destroy($id);
 	}
 }

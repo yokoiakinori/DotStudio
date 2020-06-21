@@ -58,4 +58,9 @@ class User extends Authenticatable
 	{
 		return $this->hasMany('App\Follower')->orderBy('created_at', 'asc');
 	}
+
+	public function notifications()
+	{
+		return $this->hasMany('App\Notification')->orderBy('created_at', 'asc');
+	}
 }

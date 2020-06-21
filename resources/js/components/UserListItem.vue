@@ -41,6 +41,10 @@ export default {
   data() {
     return {
       maxwidth: 400,
+      notification: {
+        message: String,
+        id: Number,
+      },
     };
   },
   computed: {
@@ -65,6 +69,9 @@ export default {
         }
       };
     },
+    authName() {
+      return this.$store.getters['auth/username'];
+    },
     productStyle() {
       const product = `${this.maxwidth / 3}px`;
       return {
@@ -80,10 +87,16 @@ export default {
     async follow(val) {
       const response = await axios.put(`/api/user/${val}/follow`);
       await this.$store.dispatch('auth/currentUser');
+      this.followedNotification();
     },
     async unfollow(val) {
       const response = await axios.delete(`/api/user/${val}/follow`);
       await this.$store.dispatch('auth/currentUser');
+    },
+    async followedNotification() {
+      this.notification.id = this.user.id;
+      this.notification.message = `${this.authName}さんが${this.user.name}さんをフォローしました。`;
+      const responsse = await axios.post('/api/notification', this.notification);
     },
   },
   watch: {},
