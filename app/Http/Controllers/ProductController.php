@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\ProductCreate;
 use App\Http\Requests\StoreComment;
+use App\Http\Requests\SearchProduct;
 use App\Product;
 use App\User;
 use App\Comment;
+use App\Producttag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,7 +20,7 @@ class ProductController extends Controller
 	public function __construct()
 	{
 		// 認証が必要
-		$this->middleware('auth')->except(['index', 'show']);
+		$this->middleware('auth')->except(['index', 'show', 'search', 'tagsearch']);
 	}
 
 	public function create(ProductCreate $request)
@@ -30,6 +32,16 @@ class ProductController extends Controller
 		$product->alldot = $request->alldot;
 		$product->colors = str_repeat("white_", $request->alldot);
 		$product->save();
+
+		$tags = $request->tags;
+		if (!$tags == null) {
+			foreach ($tags as $tag) {
+				$producttag = new Producttag();
+				$producttag->product_id = $product->id;
+				$producttag->message = $tag;
+				$producttag->save();
+			}
+		}
 		return $product;
 	}
 
@@ -42,10 +54,8 @@ class ProductController extends Controller
 
 	public function dotsave(Request $request)
 	{
-		$userid = Auth::id();
-		$products = Product::with('user')->where('user_id', $userid)->orderBy('id', 'asc')->get();
 		$currentid = $request->currentProduct;
-		$product = $products[$currentid - 1];
+		$product = Product::with('user')->where('id', $currentid)->first();
 		$color = "";
 		foreach ($request['dots'] as $item) {
 			$color = $color . $item['color'] . '_';
@@ -56,22 +66,20 @@ class ProductController extends Controller
 
 	public function current(Request $request)
 	{
-		$userid = Auth::id();
-		$products = Product::with('user')->where('user_id', $userid)->orderBy('id', 'asc')->get();
-		$product = $products[$request['id'] - 1]->colors;
-		$productcolors = explode("_", $product);
+		$product = Product::with('user')->where('id', $request->id)->first();
+		$productcolors = explode("_", $product->colors);
 		return response($productcolors, 200);
 	}
 
 	public function index()
 	{
-		$products = Product::with('user', 'likes')->orderBy(Product::CREATED_AT, 'desc')->paginate();
+		$products = Product::with('user', 'likes', 'producttags')->orderBy(Product::CREATED_AT, 'desc')->paginate();
 		return $products;
 	}
 
-	public function show(string $id)
+	public function show(String $id)
 	{
-		$product = Product::where('id', $id)->with('user', 'comments.user', 'likes')->first();
+		$product = Product::where('id', $id)->with('user', 'comments.user', 'likes', 'producttags')->first();
 		return $product ?? abort(404);
 	}
 
@@ -113,5 +121,20 @@ class ProductController extends Controller
 
 		$product->likes()->detach(Auth::user()->id);
 		return ["product_id" => $id];
+	}
+
+	public function search(Request $request)
+	{
+		$products = Product::search($request->keyword)->paginate();
+		return $products;
+	}
+
+	public function tagsearch(Request $request)
+	{
+		$tag = $request->tag;
+		$products = Product::whereIn('id', function ($query) use ($tag) {
+			$query->from('producttags')->select('producttags.product_id')->where('producttags.message', $tag);
+		})->paginate();
+		return $products;
 	}
 }

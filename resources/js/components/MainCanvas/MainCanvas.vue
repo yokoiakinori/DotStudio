@@ -3,12 +3,12 @@
     <ul>
       <Dot
         v-for="item in allCanvasDot"
-        v-bind:key="item"
-        v-bind:dotid="item"
-        v-bind:drawingJudgement="drawingJudgement"
-        v-bind:lineDotVolume="lineDotVolume"
-        v-bind:color="color[item-1]"
-        @mousedown.native="dragStart"
+        :key="item"
+        :dotid="item"
+        :drawingJudgement="drawingJudgement"
+        :lineDotVolume="lineDotVolume"
+        :color="color[item-1]"
+        @mousedown.native="dragStart(item)"
         @mouseup.native="dragEnd"
         @saveProduct="saveProduct"
       ></Dot>
@@ -26,41 +26,66 @@ export default {
   data() {
     return {
       drawingJudgement: false,
+      allCanvasDot: 0,
       lineDotVolume: 0,
       dots: [],
       color: [],
+      firstClick: null,
+      secondClick: null,
     };
   },
   computed: mapState({
-    allCanvasDot: state => state.maincanvas.allDotVolume,
     saveStatus: state => state.maincanvas.saveStatus,
     currentProduct: state => state.maincanvas.currentProduct,
+    drawingTool: state => state.maincanvas.drawingTool,
+    drawingColor: state => state.maincanvas.drawingColor,
   }),
   watch: {
-    allCanvasDot() {
-      this.$nextTick(function() {
-        this.lineDotVolume = this.$store.state.maincanvas.lineDotVolume;
-      });
-    },
     saveStatus() {
       this.$nextTick(function() {
         this.saveConnect();
       });
     },
     async currentProduct(val) {
-      const response = await axios.post('/api/products/current', { id: val });
-      for (let i = 1; i <= this.allCanvasDot; i++) {
-        const currentcolor = response.data[i - 1];
-        this.color.push(currentcolor);
-        this.$nextTick(function() {
-          this.color.length = 0;
-        });
+      await this.beforeCurrentReset();
+      this.allCanvasDot = this.$store.state.maincanvas.allDotVolume;
+      this.$nextTick(function() {
+        this.lineDotVolume = this.$store.state.maincanvas.lineDotVolume;
+      });
+      await this.deploymentDot(val);
+    },
+    drawingTool(val) {
+      if (val == 'reset') {
+        this.color.length = 0;
+        for (let i = 1; i <= this.allCanvasDot; i++) {
+          this.color.push('white');
+          this.$nextTick(function() {
+            this.color.length = 0;
+          });
+        }
+      }
+    },
+    secondClick() {
+      if (this.drawingTool == 'line') {
+        this.lineDraw();
+      } else if (this.drawingTool == 'square') {
+        this.squareDraw();
+      } else if (this.drawingTool == 'squareline') {
+        this.squarelineDraw();
       }
     },
   },
   methods: {
-    dragStart() {
+    dragStart(val) {
       this.drawingJudgement = true;
+      if (['line', 'square', 'squareline'].includes(this.drawingTool) && this.firstClick == null) {
+        this.firstClick = val;
+      } else if (
+        ['line', 'square', 'squareline'].includes(this.drawingTool) &&
+        this.secondClick == null
+      ) {
+        this.secondClick = val; //check [watch:secondClick()]
+      }
     },
     dragEnd() {
       this.drawingJudgement = false;
@@ -69,13 +94,68 @@ export default {
       this.dots.push(data);
     },
     async saveConnect() {
-      // console.log(this.dots)
       const response = await axios.post('/api/products/save', {
         currentProduct: this.currentProduct,
         dots: this.dots,
       });
       this.dots.length = 0;
     },
+    async deploymentDot(val) {
+      const response = await axios.post('/api/products/current', { id: val });
+      for (let i = 1; i <= this.allCanvasDot; i++) {
+        const currentcolor = response.data[i - 1];
+        this.color.push(currentcolor);
+      }
+    },
+    async beforeCurrentReset() {
+      this.color.length = 0;
+      for (let i = 1; i <= this.allCanvasDot; i++) {
+        this.color.push('white');
+      }
+      this.$nextTick(function() {
+        this.color.length = 0;
+      });
+      await this.sleep();
+    },
+    sleep() {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          resolve();
+        }, 300);
+      });
+    },
+    lineDraw() {
+      const startNumber = Math.min(this.firstClick, this.secondClick);
+      const lastNumber = Math.max(this.firstClick, this.secondClick);
+      const differenceNumber = lastNumber - startNumber;
+      if (differenceNumber < this.lineDotVolume) {
+        for (let i = startNumber; i <= lastNumber; i++) {
+          this.color[i - 1] = this.drawingColor;
+        }
+      } else if (differenceNumber % this.lineDotVolume == 0) {
+        const count = differenceNumber / this.lineDotVolume;
+        for (let i = 1; i <= count; i++) {
+          this.color[startNumber + i * this.lineDotVolume - 1] = this.drawingColor;
+        }
+      }
+      this.firstClick = null;
+      this.secondClick = null;
+    },
+    squareDraw() {
+      const startNumber = Math.min(this.firstClick, this.secondClick); //変数定義が重複しているがよりよい書き方がわからないため放置
+      const lastNumber = Math.max(this.firstClick, this.secondClick);
+      const differenceNumber = lastNumber - startNumber;
+      const count = differenceNumber / this.lineDotVolume;
+      const rowEndNumber = startNumber + (differenceNumber % this.lineDotVolume);
+      for (let i = 0; i <= count; i++) {
+        for (let j = startNumber; j <= rowEndNumber; j++) {
+          this.color[j + i * this.lineDotVolume - 1] = this.drawingColor;
+        }
+      }
+      this.firstClick = null;
+      this.secondClick = null;
+    },
+    squarelineDraw() {},
   },
 };
 </script>

@@ -1,22 +1,42 @@
 <template>
   <div>
     <ul>
-      <li>
-        <i class="fas fa-paint-brush"></i>
+      <li
+        v-for="tool in tools"
+        :key="tool.id"
+        :class="{ active: currentToolId === tool.id }"
+        @click="currentTool(tool.name,tool.id)"
+      >
+        <i :class="tool.class"></i>
       </li>
-      <li>
-        <i class="fas fa-eraser"></i>
-      </li>
-      <li></li>
-      <li></li>
-      <li></li>
-      <li></li>
     </ul>
   </div>
 </template>
 
 <script>
-export default {};
+export default {
+  data() {
+    return {
+      tools: [
+        { id: 0, class: 'fas fa-paint-brush brush', name: 'brush' },
+        { id: 1, class: 'fas fa-eraser', name: 'eraser' },
+        { id: 2, class: 'fas fa-fill', name: 'fill' },
+        { id: 3, class: 'fas fa-slash', name: 'line' },
+        { id: 4, class: 'fas fa-square', name: 'square' },
+        { id: 5, class: 'far fa-square', name: 'squareline' },
+        { id: 6, class: 'fas fa-ban', name: 'reset' },
+      ],
+      currentToolId: 0,
+    };
+  },
+  methods: {
+    currentTool(toolname, id) {
+      this.currentToolId = id;
+      let drawingtool = toolname;
+      this.$store.commit('maincanvas/drawingTool', drawingtool);
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -27,12 +47,18 @@ div {
     padding: 0;
     display: flex;
     flex-flow: row wrap;
-    justify-content: space-between;
+    // justify-content: space-between;
     padding: 20px;
   }
 }
 i {
   color: rgba($maincolor, 0.3);
   font-size: 30px;
+  margin: 10px;
 }
-</style>>
+.active {
+  i {
+    color: $maincolor;
+  }
+}
+</style>

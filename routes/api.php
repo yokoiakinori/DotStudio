@@ -40,11 +40,13 @@ Route::get('/products', 'ProductController@list')->name('product.list');
 Route::post('/products/save', 'ProductController@dotsave')->name('product.save');
 Route::post('/products/current', 'ProductController@current')->name('product.current');
 Route::get('/products/index', 'ProductController@index')->name('product.index');
-Route::get('/products/{id}', 'ProductController@show')->name('product.show');
+Route::get('/product/{id}', 'ProductController@show')->name('product.show');
 Route::get('products/delete/{id}', 'ProductController@delete')->name('product.delete');
 Route::post('/products/{product}/comments', 'ProductController@addComment')->name('product.comment');
 Route::put('/products/{id}/like', 'ProductController@like')->name('product.like');
 Route::delete('/products/{id}/like', 'ProductController@unlike');
+Route::get('/search', 'ProductController@search')->name('product.search');
+Route::get('/tagsearch', 'ProductController@tagsearch')->name('product.tagsearch');
 Route::get('/refresh-token', function (Illuminate\Http\Request $request) {
 	$request->session()->regenerateToken();
 

@@ -4,13 +4,13 @@
       <li
         v-for="paletcolor in paletcolors"
         :key="paletcolor.id"
-        :class="{active:currentpalet === paletcolor.id}"
+        :class="{ active: currentpalet === paletcolor.id }"
         :style="activeStyle(paletcolor.color)"
       >
         <i
           class="fas fa-palette"
-          :style="{color: paletcolor.color}"
-          @click="drawingColorInput(paletcolor.color,paletcolor.id)"
+          :style="{ color: paletcolor.color }"
+          @click="drawingColorInput(paletcolor.color, paletcolor.id)"
         ></i>
       </li>
     </ul>
@@ -25,8 +25,8 @@ export default {
     return {
       paletcolors: [
         { id: 1, color: 'black' },
-        { id: 2, color: 'rgb(50%, 50%, 50%)' },
-        { id: 3, color: 'white' },
+        { id: 2, color: 'rgb(40%, 40%, 40%)' },
+        { id: 3, color: 'rgb(70%, 70%, 70%)' },
         { id: 4, color: '#f45757' },
         { id: 5, color: '#27c227' },
         { id: 6, color: '#4587d4' },
@@ -43,9 +43,8 @@ export default {
   methods: {
     drawingColorInput(color, id) {
       this.currentpalet = id;
-      let drawColor = color;
-      this.$store.commit('maincanvas/drawingColor', drawColor);
-      // console.log(this.$store.state.drawingColor)
+      let drawingColor = color;
+      this.$store.commit('maincanvas/drawingColor', drawingColor);
     },
     activeStyle(color) {
       return {

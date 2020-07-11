@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 
 import MyDrawing from './views/MyDrawing.vue'
 import Home from './views/Home.vue'
+import Search from './views/Search.vue'
+import TagSearch from './views/TagSearch.vue'
 import Login from './views/Login.vue'
 import ProductDetail from './views/ProductDetail.vue'
 import UsersList from './views/UsersList.vue'
@@ -28,6 +30,28 @@ const router = new VueRouter({
 					page: /^[1-9][0-9]*$/.test(page) ? page * 1 : 1
 				}
 			}
+		},
+		{
+			path: '/search',
+			component: Search,
+			props: route => {
+				const page = route.query.page
+				return {
+					page: /^[1-9][0-9]*$/.test(page) ? page * 1 : 1
+				}
+			}
+
+		},
+		{
+			path: '/tagsearch',
+			component: TagSearch,
+			props: route => {
+				const page = route.query.page
+				return {
+					page: /^[1-9][0-9]*$/.test(page) ? page * 1 : 1
+				}
+			}
+
 		},
 		{
 			path: '/products/:id',

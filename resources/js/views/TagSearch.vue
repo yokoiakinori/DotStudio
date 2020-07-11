@@ -11,6 +11,7 @@
 import AllProducts from '../components/AllProducts.vue';
 import Axios from 'axios';
 import { OK } from '../util';
+import { mapState } from 'vuex';
 export default {
   components: {
     AllProducts,
@@ -20,12 +21,15 @@ export default {
       products: [],
       currentPage: 0,
       lastPage: 0,
-      routerPath: '/',
+      routerPath: '/search',
     };
   },
+  computed: mapState({
+    searchTag: state => state.search.tag,
+  }),
   methods: {
     async showProducts() {
-      const response = await axios.get(`/api/products/index/?page=${this.page}`);
+      const response = await axios.get(`/api/tagsearch/?page=${this.page}&tag=${this.searchTag}`);
       if (response.status !== OK) {
         this.$store.commit('error/setCode', response.status);
         return false;
@@ -35,19 +39,22 @@ export default {
       this.lastPage = response.data.last_page;
     },
   },
+  watch: {
+    $route: {
+      async handler() {
+        if (this.searchTag == null) {
+          this.$router.push('/');
+        }
+        await this.showProducts();
+      },
+      immediate: true,
+    },
+  },
   props: {
     page: {
       type: Number,
       required: false,
       default: 1,
-    },
-  },
-  watch: {
-    $route: {
-      async handler() {
-        await this.showProducts();
-      },
-      immediate: true,
     },
   },
 };

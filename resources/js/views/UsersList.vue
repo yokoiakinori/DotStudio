@@ -4,7 +4,7 @@
     <ul>
       <UserListItem v-for="(user,index) in users" :key="user.id" :index="index" :user="user"></UserListItem>
     </ul>
-    <Pagination :current-page="currentPage" :last-page="lastPage" />
+    <Pagination :current-page="currentPage" :last-page="lastPage" routerPath="/userslist" />
   </div>
 </template>
 

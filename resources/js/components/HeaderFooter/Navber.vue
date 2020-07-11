@@ -2,8 +2,8 @@
   <nav class="navber">
     <router-link class="navber_logo" to="/" exact>Dotstudio</router-link>
     <form action class="searchbox">
-      <input type="text" placeholder="タグ、作品名" />
-      <i class="fas fa-search"></i>
+      <input type="text" placeholder="タグ、作品名" v-model="searchText" />
+      <i class="fas fa-search" @click="setKeyword"></i>
     </form>
     <div class="navbar__menu">
       <div v-if="isLogin" class="navbar__item">
@@ -34,6 +34,11 @@
 
 <script>
 export default {
+  data() {
+    return {
+      searchText: null,
+    };
+  },
   computed: {
     isLogin() {
       return this.$store.getters['auth/check'];
@@ -51,6 +56,12 @@ export default {
   methods: {
     reset() {
       this.$store.commit('maincanvas/resetProduct');
+    },
+    setKeyword() {
+      if (this.searchText != null) {
+        this.$store.commit('search/setKeyword', this.searchText);
+        this.$router.push('/search');
+      }
     },
   },
 };

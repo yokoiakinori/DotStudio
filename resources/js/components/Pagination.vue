@@ -7,6 +7,10 @@
     >
       <router-link :to="`${routerPath}?page=${number}`">{{number}}</router-link>
     </li>
+    <p v-if="lastPage>=6">…</p>
+    <li v-if="lastPage>=6">
+      <router-link :to="`${routerPath}?page=${lastPage}`">{{lastPage}}</router-link>
+    </li>
   </ul>
 </template>>
 
@@ -33,16 +37,16 @@ export default {
     },
     paginateListNumber() {
       const numbers = [];
-      if (this.lastPage - this.currentPage < 4 && this.currentPage == 1) {
-        for (let i = 0; i <= this.lastPage - this.currentPage; i++) {
-          numbers.push(this.currentPage + i);
+      if (this.lastPage <= 5 && this.currentPage < 4) {
+        //currentPage:3以下 lastPage:5以下
+        for (let i = 1; i <= this.lastPage; i++) {
+          numbers.push(i);
         }
-      }
-      if (this.lastPage - this.currentPage < 4 && this.currentPage !== 1 && this.currentPage < 4) {
-        for (let i = -(this.currentPage - 1); i <= this.lastPage - this.currentPage; i++) {
-          numbers.push(this.currentPage + i);
+      } else if (this.lastPage > 5 && this.lastPage - this.currentPage > 3) {
+        //lastPage:6以上
+        for (let i = this.currentPage; i <= this.currentPage + 4; i++) {
+          numbers.push(i);
         }
-      } else {
       }
       return numbers;
     },
@@ -59,6 +63,7 @@ export default {
   width: 100%;
   height: 32px;
   margin: 0;
+  padding: 0;
   li {
     display: flex;
     justify-content: center;

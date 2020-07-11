@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Laravel\Scout\Searchable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -10,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class Product extends Model
 {
+	use Searchable;
 	protected $guarded = array(
 		'id',
 		'user_id'
@@ -20,7 +22,7 @@ class Product extends Model
 	];
 
 	protected $visible = [
-		'id', 'user', 'productname', 'alldot', 'linedot', 'colors', 'comments', 'likes_count', 'liked_by_user',
+		'id', 'user', 'productname', 'alldot', 'linedot', 'colors', 'comments', 'likes_count', 'liked_by_user', 'producttags'
 	];
 
 	public function user()
@@ -31,6 +33,11 @@ class Product extends Model
 	public function comments()
 	{
 		return $this->hasMany('App\Comment')->orderBy('id', 'desc');
+	}
+
+	public function producttags()
+	{
+		return $this->hasMany('App\Producttag');
 	}
 
 	public function likes()
