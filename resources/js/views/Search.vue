@@ -1,10 +1,10 @@
 <template>
-  <AllProducts
-    :products="products"
-    :currentPage="currentPage"
-    :lastPage="lastPage"
-    :routerPath="routerPath"
-  ></AllProducts>
+	<AllProducts
+		:products="products"
+		:currentPage="currentPage"
+		:lastPage="lastPage"
+		:routerPath="routerPath"
+	></AllProducts>
 </template>
 
 <script>
@@ -13,69 +13,71 @@ import Axios from 'axios';
 import { OK } from '../util';
 import { mapState } from 'vuex';
 export default {
-  components: {
-    AllProducts,
-  },
-  data() {
-    return {
-      products: [],
-      currentPage: 0,
-      lastPage: 0,
-      routerPath: '/search',
-    };
-  },
-  computed: mapState({
-    searchKeyword: state => state.search.keyword,
-  }),
-  methods: {
-    async showProducts() {
-      const response = await axios.get(
-        `/api/search/?page=${this.page}&keyword=${this.searchKeyword}`
-      );
-      if (response.status !== OK) {
-        this.$store.commit('error/setCode', response.status);
-        return false;
-      }
-      this.products = response.data.data;
-      this.currentPage = response.data.current_page;
-      this.lastPage = response.data.last_page;
-    },
-  },
-  watch: {
-    $route: {
-      async handler() {
-        if (this.searchKeyword == null) {
-          this.$router.push('/');
-        }
-        await this.showProducts();
-      },
-      immediate: true,
-    },
-  },
-  props: {
-    page: {
-      type: Number,
-      required: false,
-      default: 1,
-    },
-  },
+	components: {
+		AllProducts,
+	},
+	data() {
+		return {
+			products: [],
+			currentPage: 0,
+			lastPage: 0,
+			routerPath: '/search',
+		};
+	},
+	computed: mapState({
+		searchKeyword: state => state.search.keyword,
+	}),
+	methods: {
+		async showProducts() {
+			const response = await axios.get(
+				`/api/search/?page=${this.page}&keyword=${this.searchKeyword}`
+			);
+			if (response.status !== OK) {
+				this.$store.commit('error/setCode', response.status);
+				return false;
+			}
+			this.products = response.data.data;
+			this.currentPage = response.data.current_page;
+			this.lastPage = response.data.last_page;
+		},
+	},
+	watch: {
+		$route: {
+			async handler() {
+				if (this.searchKeyword == null) {
+					this.$router.push('/');
+				}
+				this.$store.commit('randing/loadingSwitch', true);
+				await this.showProducts();
+				this.$store.commit('randing/loadingSwitch', false);
+			},
+			immediate: true,
+		},
+	},
+	props: {
+		page: {
+			type: Number,
+			required: false,
+			default: 1,
+		},
+	},
 };
 </script>
 
 <style lang="scss" scoped>
 @import '../../sass/common.scss';
 .Home {
-  margin: 0 auto;
-  margin-top: 0;
-  display: flex;
-  width: 100%;
-  align-items: center;
-  flex-flow: column;
+	margin: 0 auto;
+	margin-top: 0;
+	display: flex;
+	width: 100%;
+	align-items: center;
+	flex-flow: column;
 }
 .productsList {
-  margin-top: 30px;
-  display: flex;
-  flex-flow: row wrap;
-  align-content: flex-start;
+	margin-top: 30px;
+	display: flex;
+	flex-flow: row wrap;
+	align-content: flex-start;
 }
 </style>

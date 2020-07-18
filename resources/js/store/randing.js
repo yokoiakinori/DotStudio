@@ -1,19 +1,21 @@
 const state = {
+	loading: true
 };
 
-const getters = {
-};
+const getters = {};
 
 const mutations = {
+	loadingSwitch(state, status) {
+		state.loading = status
+	}
 };
 
-const actions = {
-};
+const actions = {};
 
 export default {
-    namespaced:true,
-    state,
-    getters,
-    mutations,
-    actions
+	namespaced: true,
+	state,
+	getters,
+	mutations,
+	actions
 };

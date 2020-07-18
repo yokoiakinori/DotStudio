@@ -32,6 +32,7 @@ export default {
       color: [],
       firstClick: null,
       secondClick: null,
+      fillColor: null,
     };
   },
   computed: mapState({
@@ -74,6 +75,9 @@ export default {
         this.squarelineDraw();
       }
     },
+    fillColor() {
+      this.fillDraw();
+    },
   },
   methods: {
     dragStart(val) {
@@ -85,6 +89,8 @@ export default {
         this.secondClick == null
       ) {
         this.secondClick = val; //check [watch:secondClick()]
+      } else if (this.drawingTool == 'fill') {
+        this.fillColor = this.color[val - 1]; //check [watch:fillColor()]
       }
     },
     dragEnd() {
@@ -121,7 +127,7 @@ export default {
       return new Promise(resolve => {
         setTimeout(() => {
           resolve();
-        }, 300);
+        }, 250);
       });
     },
     lineDraw() {
@@ -155,7 +161,39 @@ export default {
       this.firstClick = null;
       this.secondClick = null;
     },
-    squarelineDraw() {},
+    squarelineDraw() {
+      const startNumber = Math.min(this.firstClick, this.secondClick); //変数定義が重複しているがよりよい書き方がわからないため放置
+      const lastNumber = Math.max(this.firstClick, this.secondClick);
+      const differenceNumber = lastNumber - startNumber;
+      const count = differenceNumber / this.lineDotVolume;
+      const rowEndNumber = startNumber + (differenceNumber % this.lineDotVolume);
+      const columnEndNumber = lastNumber - (differenceNumber % this.lineDotVolume);
+      for (let i = startNumber; i <= rowEndNumber; i++) {
+        this.color[i - 1] = this.drawingColor;
+      }
+      for (let i = 1; i <= count; i++) {
+        this.color[startNumber + i * this.lineDotVolume - 1] = this.drawingColor;
+      }
+      for (let i = columnEndNumber; i <= lastNumber; i++) {
+        this.color[i - 1] = this.drawingColor;
+      }
+      for (let i = 1; i <= count; i++) {
+        this.color[rowEndNumber + i * this.lineDotVolume - 1] = this.drawingColor;
+      }
+      this.firstClick = null;
+      this.secondClick = null;
+    },
+    fillDraw() {
+      let checkInvalid = true;
+      for (let i = 0; i <= this.lineDotVolume; i++) {
+        for (let j = 1; j <= this.lineDotVolume; j++) {
+          if (this.color[j + i * this.lineDotVolume - 1] == this.fillColor) {
+            this.color[j + i * this.lineDotVolume - 1] = this.drawingColor;
+          }
+        }
+      }
+      this.fillColor = null;
+    },
   },
 };
 </script>
