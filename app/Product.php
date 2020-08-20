@@ -22,7 +22,7 @@ class Product extends Model
 	];
 
 	protected $visible = [
-		'id', 'user', 'productname', 'alldot', 'linedot', 'colors', 'comments', 'likes_count', 'liked_by_user', 'producttags'
+		'id', 'user', 'productname', 'alldot', 'linedot', 'colors', 'comments', 'likes_count', 'liked_by_user', 'producttags', 'usedmaterial'
 	];
 
 	public function user()
@@ -43,6 +43,11 @@ class Product extends Model
 	public function likes()
 	{
 		return $this->belongsToMany('App\User', 'likes')->withTimestamps();
+	}
+
+	public function materialproducts()
+	{
+		return $this->belongsToMany('App\User', 'materialproducts')->withTimestamps();
 	}
 
 	public function getLikesCountAttribute()

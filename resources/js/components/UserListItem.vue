@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import Product from '../components/index/Product.vue';
+import Product from '../components/Products/Product.vue';
 import Axios from 'axios';
 import { OK } from '../util';
 export default {

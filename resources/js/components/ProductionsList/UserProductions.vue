@@ -89,6 +89,7 @@ export default {
 				alldot: current.alldot,
 				linedot: current.linedot,
 				id: current.id,
+				usedmaterial: current.usedmaterial,
 			});
 		},
 		producttagstring: function(val) {
@@ -199,7 +200,7 @@ div {
 }
 .UserProductions {
 	width: 100%;
-	height: 260px;
+	height: 220px;
 	margin: 0;
 	padding: 0;
 	display: flex;

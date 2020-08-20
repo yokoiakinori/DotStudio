@@ -20,6 +20,7 @@ use Illuminate\Support\Facades\Auth;
 Route::post('/register', 'Auth\RegisterController@register')->name('register');
 Route::post('/login', 'Auth\LoginController@login')->name('login');
 Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
+
 Route::get('/user', 'UserController@myacount')->name('user');
 Route::put('/user/{id}/follow', 'UserController@follow')->name('user.follow');
 Route::delete('/user/{id}/follow', 'UserController@unfollow');
@@ -30,11 +31,14 @@ Route::get('/users/products/{id}', 'UserController@products')->name('user.produc
 Route::get('/users/likeproducts/{id}', 'UserController@likeproducts')->name('user.likeproducts');
 Route::get('/users/{id}', 'UserController@currentuser')->name('user.current');
 Route::post('/userupdate', 'UserController@updateuser')->name('user.update');
+
 Route::post('/thumbnail', 'UserthumbnailController@create')->name('thumbnail.create');
 Route::post('/thumbnail/update', 'UserthumbnailController@update')->name('thumbnail.update');
+
 Route::post('/notification', 'UserController@notificationInput')->name('notification.input');
 Route::get('/notification', 'UserController@notificationsList')->name('notification.list');
 Route::delete('/notification/{id}', 'UserController@notificationDelete')->name('notification.delete');
+
 Route::post('/products', 'ProductController@create')->name('product.create');
 Route::get('/products', 'ProductController@list')->name('product.list');
 Route::post('/products/save', 'ProductController@dotsave')->name('product.save');
@@ -45,6 +49,9 @@ Route::get('products/delete/{id}', 'ProductController@delete')->name('product.de
 Route::post('/products/{product}/comments', 'ProductController@addComment')->name('product.comment');
 Route::put('/products/{id}/like', 'ProductController@like')->name('product.like');
 Route::delete('/products/{id}/like', 'ProductController@unlike');
+
+Route::put('/material/{id}', 'ProductController@materialadd')->name('material.add');
+Route::get('/materials', 'ProductController@materiallist')->name('materials.list');
 Route::get('/search', 'ProductController@search')->name('product.search');
 Route::get('/tagsearch', 'ProductController@tagsearch')->name('product.tagsearch');
 Route::get('/refresh-token', function (Illuminate\Http\Request $request) {

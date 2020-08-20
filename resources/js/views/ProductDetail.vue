@@ -8,6 +8,9 @@
 					<ProductTag :message="tag.message"></ProductTag>
 				</li>
 			</ul>
+			<button class="formButton" v-if="isLogin && myProduct" @click="onMaterialClick">
+				素材としてダウンロード
+			</button>
 		</div>
 		<div class="comments">
 			<h2>Comments</h2>
@@ -26,7 +29,7 @@
 				</div>
 				<textarea v-model="commentContent"></textarea>
 				<div>
-					<button type="submit">コメントをつける</button>
+					<button type="submit" class="formButton">コメントをつける</button>
 				</div>
 			</form>
 		</div>
@@ -35,7 +38,7 @@
 <script>
 import Axios from 'axios';
 import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../util';
-import Product from '../components/index/Product.vue';
+import Product from '../components/Products/Product.vue';
 import ProductTag from '../components/ProductTag.vue';
 export default {
 	components: {
@@ -62,6 +65,9 @@ export default {
 	computed: {
 		isLogin() {
 			return this.$store.getters['auth/check'];
+		},
+		myProduct() {
+			return this.product.user.id != this.$store.getters['auth/userid'];
 		},
 	},
 	methods: {
@@ -92,38 +98,72 @@ export default {
 
 			this.product.comments = [response.data, ...this.product.comments];
 		},
-		onLikeClick() {
-			if (!this.isLogin) {
+		onLikeClick({ id, liked }) {
+			if (!this.$store.getters['auth/check']) {
 				alert('いいね機能を使うにはログインしてください。');
 				return false;
 			}
 
-			if (this.product.liked_by_user) {
-				this.unlike();
+			if (liked) {
+				this.unlike(id);
 			} else {
-				this.like();
+				this.like(id);
 			}
 		},
-		async like() {
-			const response = await axios.put(`/api/products/${this.id}/like`);
+		async like(id) {
+			const response = await axios.put(`/api/products/${id}/like`);
 
 			if (response.status !== OK) {
 				this.$store.commit('error/setCode', response.status);
 				return false;
 			}
 
-			this.product.likes_count = this.product.likes_count + 1;
-			this.product.liked_by_user = true;
+			this.products = this.products.map(product => {
+				if (product.id == response.data.product_id) {
+					product.likes_count += 1;
+					product.liked_by_user = true;
+					if (product.likes_count % 10 == 0 && product.likes_count >= 10) {
+						this.likedNotification(product.productname, product.likes_count, product.user.id);
+					}
+				}
+				return product;
+			});
 		},
-		async unlike() {
-			const response = await axios.delete(`/api/products/${this.id}/like`);
+		async unlike(id) {
+			const response = await axios.delete(`/api/products/${id}/like`);
+
 			if (response.status !== OK) {
 				this.$store.commit('error/setCode', response.status);
 				return false;
 			}
 
-			this.product.likes_count = this.product.likes_count - 1;
-			this.product.liked_by_user = false;
+			this.products = this.products.map(product => {
+				if (product.id == response.data.product_id) {
+					product.likes_count -= 1;
+					product.liked_by_user = false;
+				}
+				return product;
+			});
+		},
+		async likedNotification(name, count, id) {
+			this.notification.id = id;
+			this.notification.message = `あなたの${name}が${count}回いいねされました。`;
+			const responsse = await axios.post('/api/notification', this.notification);
+		},
+		onMaterialClick() {
+			if (!this.$store.getters['auth/check']) {
+				alert('いいね機能を使うにはログインしてください。');
+				return false;
+			}
+			this.materialAdd();
+		},
+		async materialAdd() {
+			const response = await axios.put(`/api/material/${this.product.id}`);
+
+			if (response.status !== OK) {
+				this.$store.commit('error/setCode', response.status);
+				return false;
+			}
 		},
 	},
 	watch: {
@@ -140,6 +180,10 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+button {
+	height: 40px;
+	padding: 0 40px;
+}
 .productDetail {
 	display: flex;
 	flex-flow: row wrap;
@@ -161,5 +205,8 @@ export default {
 			align-items: center;
 		}
 	}
+}
+.comments {
+	margin: 0 0 30px 30px;
 }
 </style>

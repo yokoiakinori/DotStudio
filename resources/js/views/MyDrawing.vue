@@ -29,10 +29,9 @@ export default {
 <style lang="scss" scoped>
 .MyDrawing {
 	display: flex;
-	justify-content: space-between;
+	justify-content: left;
 	box-sizing: border-box;
 	width: 100%;
-	height: 1050px;
-	padding: 30px 0;
+	padding: 30px 0 50px;
 }
 </style>

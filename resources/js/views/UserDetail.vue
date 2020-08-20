@@ -49,7 +49,7 @@
 
 <script>
 import Pagination from '../components/Pagination.vue';
-import Product from '../components/index/Product.vue';
+import Product from '../components/Products/Product.vue';
 import Axios from 'axios';
 import { OK, CREATED, UNPROCESSABLE_ENTITY } from '../util';
 export default {

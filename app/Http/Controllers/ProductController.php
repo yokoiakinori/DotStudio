@@ -9,6 +9,7 @@ use App\Product;
 use App\User;
 use App\Comment;
 use App\Producttag;
+use App\Materialproduct;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -45,7 +46,7 @@ class ProductController extends Controller
 		return $product;
 	}
 
-	public function list(Request $request)
+	public function list()
 	{
 		$userid = Auth::id();
 		$list = Product::where('user_id', $userid)->orderBy('created_at', 'asc')->paginate(3);
@@ -136,5 +137,25 @@ class ProductController extends Controller
 			$query->from('producttags')->select('producttags.product_id')->where('producttags.message', $tag);
 		})->paginate();
 		return $products;
+	}
+
+	public function materialadd(string $id)
+	{
+		$product = Product::where('id', $id)->with('materialproducts')->first();
+		if (!$product) {
+			abort(404);
+		}
+
+		$product->materialproducts()->detach(Auth::user()->id);
+		$product->materialproducts()->attach(Auth::user()->id);
+		return ["product_id" => $id];
+	}
+
+	public function materiallist()
+	{
+		$userid = Auth::id();
+		$listIndex = Materialproduct::where('user_id', $userid)->orderBy('created_at', 'asc')->pluck('product_id');
+		$list = Product::wherein('id', $listIndex)->with('user')->get();
+		return response($list, 200);
 	}
 }

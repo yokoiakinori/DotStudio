@@ -59,7 +59,8 @@ export default {
 <style lang="scss" scoped>
 @import '../sass/common.scss';
 main {
-	width: 1050px;
+	width: 100vw;
+	max-width: 1050px;
 	margin: 0 auto;
 	background-color: rgba($maincolor, 0.07);
 }

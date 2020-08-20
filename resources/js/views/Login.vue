@@ -70,6 +70,8 @@
 
 <script>
 import { mapState } from 'vuex';
+import Axios from 'axios';
+import { OK } from '../util';
 
 export default {
 	data() {
@@ -117,12 +119,13 @@ export default {
 	}),
 	watch: {
 		$route: {
-			handler() {
+			async handler() {
 				this.$store.commit('randing/loadingSwitch', true);
-				this.$nextTick(function() {
+				await this.$nextTick(function() {
 					this.$store.commit('randing/loadingSwitch', false);
 				});
 			},
+			immediate: true,
 		},
 	},
 };

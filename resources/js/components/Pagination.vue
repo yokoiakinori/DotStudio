@@ -1,19 +1,32 @@
 <template>
   <ul class="paginationList">
     <li
-      v-for="number in paginateListNumber"
+      v-for="number in frontPageRange"
       :key="number"
-      :class="{currentButton:currentPage==number}"
+      :class="{ currentButton: currentPage == number }"
     >
-      <router-link :to="`${routerPath}?page=${number}`">{{number}}</router-link>
+      <router-link :to="`${routerPath}?page=${number}`">{{ number }}</router-link>
     </li>
-    <p v-if="lastPage>=6">…</p>
-    <li v-if="lastPage>=6">
-      <router-link :to="`${routerPath}?page=${lastPage}`">{{lastPage}}</router-link>
+    <li v-show="frontDot">…</li>
+    <li
+      v-for="number in middlePageRange"
+      :key="number"
+      :class="{ currentButton: currentPage == number }"
+      v-show="lastPage>=3"
+    >
+      <router-link :to="`${routerPath}?page=${number}`">{{ number }}</router-link>
+    </li>
+    <li v-show="endDot">…</li>
+    <li
+      v-for="number in endPageRange"
+      :key="number"
+      :class="{ currentButton: currentPage == number }"
+      v-show="lastPage>=9"
+    >
+      <router-link :to="`${routerPath}?page=${number}`">{{ number }}</router-link>
     </li>
   </ul>
-</template>>
-
+</template>
 
 <script>
 export default {
@@ -28,6 +41,12 @@ export default {
     },
     routerPath: String,
   },
+  data() {
+    return {
+      frontDot: false,
+      endDot: false,
+    };
+  },
   computed: {
     isFirstPage() {
       return this.currentPage === 1;
@@ -35,24 +54,51 @@ export default {
     isLastPage() {
       return this.currentPage === this.lastPage;
     },
-    paginateListNumber() {
+    frontPageRange() {
       const numbers = [];
-      if (this.lastPage <= 5 && this.currentPage < 4) {
-        //currentPage:3以下 lastPage:5以下
-        for (let i = 1; i <= this.lastPage; i++) {
-          numbers.push(i);
-        }
-      } else if (this.lastPage > 5 && this.lastPage - this.currentPage > 3) {
-        //lastPage:6以上
-        for (let i = this.currentPage; i <= this.currentPage + 4; i++) {
-          numbers.push(i);
-        }
+      if (this.lastPage >= 2) {
+        numbers.push(1, 2);
+      } else {
+        numbers.push(1);
       }
       return numbers;
     },
+    middlePageRange() {
+      const numbers = [];
+      const range = 5;
+      let start;
+      let end;
+      if (this.currentPage <= range && this.lastPage >= 9) {
+        start = 3;
+        end = range + 2;
+        this.endDot = true;
+      } else if (this.currentPage > this.lastPage - range && this.lastPage >= 9) {
+        start = this.lastPage - range - 1;
+        end = this.lastPage - 2;
+        this.frontDot = true;
+      } else if (this.lastPage >= 9) {
+        start = this.currentPage - Math.floor(range / 2);
+        end = this.currentPage + Math.floor(range / 2);
+        this.frontDot = true;
+        this.endDot = true;
+      } else {
+        start = 3;
+        end = this.lastPage;
+      }
+      for (let i = start; i <= end; i++) {
+        numbers.push(i);
+      }
+      return numbers;
+    },
+    endPageRange() {
+      const numbers = [];
+      if (this.lastPage >= 9) {
+        numbers.push(this.lastPage - 1, this.lastPage);
+      }
+    },
   },
 };
-</script>>
+</script>
 
 <style lang="scss" scoped>
 @import '../../sass/common.scss';
