@@ -25,31 +25,26 @@ export default {
 	},
 	data() {
 		return {
-			drawingJudgement: false,
 			allCanvasDot: 0,
-			lineDotVolume: 0,
-			dots: [],
 			color: [],
-			firstClick: null,
-			secondClick: null,
+			dots: [],
+			drawingJudgement: false,
 			fillColor: null,
+			firstClick: null,
+			lineDotVolume: 0,
 			materialColor: null,
+			secondClick: null,
 		};
 	},
 	computed: mapState({
-		saveStatus: state => state.maincanvas.saveStatus,
-		currentProduct: state => state.maincanvas.currentProduct,
-		drawingTool: state => state.maincanvas.drawingTool,
-		drawingColor: state => state.maincanvas.drawingColor,
 		currentMaterial: state => state.maincanvas.currentMaterial,
-		saveMaterial: state => state.maincanvas.saveMaterial,
+		currentProduct: state => state.maincanvas.currentProduct,
+		drawingColor: state => state.maincanvas.drawingColor,
+		drawingTool: state => state.maincanvas.drawingTool,
+		saveStatus: state => state.maincanvas.saveStatus,
+		usedMaterial: state => state.maincanvas.saveMaterial,
 	}),
 	watch: {
-		saveStatus() {
-			this.$nextTick(function() {
-				this.saveConnect();
-			});
-		},
 		async currentProduct(val) {
 			//メニューからプロダクトが選択された時実行
 			await this.beforeCurrentReset();
@@ -59,10 +54,21 @@ export default {
 			});
 			await this.deploymentDot(val);
 		},
+		currentMaterial() {
+			this.setMaterialColor();
+		},
 		drawingTool(val) {
 			if (val == 'reset') {
 				this.drawReset();
 			}
+		},
+		fillColor() {
+			this.fillDraw();
+		},
+		saveStatus() {
+			this.$nextTick(function() {
+				this.saveConnect();
+			});
 		},
 		secondClick() {
 			if (this.drawingTool == 'line') {
@@ -73,14 +79,25 @@ export default {
 				this.squarelineDraw();
 			}
 		},
-		fillColor() {
-			this.fillDraw();
-		},
-		currentMaterial() {
-			this.setMaterialColor();
-		},
 	},
 	methods: {
+		async beforeCurrentReset() {
+			this.color.length = 0;
+			for (let i = 1; i <= this.allCanvasDot; i++) {
+				this.color.push('white');
+			}
+			this.$nextTick(function() {
+				this.color.length = 0;
+			});
+			await this.sleep();
+		},
+		async deploymentDot(val) {
+			const response = await axios.post('/api/products/current', { id: val });
+			for (let i = 1; i <= this.allCanvasDot; i++) {
+				const currentcolor = response.data[i - 1];
+				this.color.push(currentcolor);
+			}
+		},
 		dragStart(val) {
 			this.drawingJudgement = true;
 			if (['line', 'square', 'squareline'].includes(this.drawingTool) && this.firstClick == null) {
@@ -99,32 +116,17 @@ export default {
 		dragEnd() {
 			this.drawingJudgement = false;
 		},
-		saveProduct(data) {
-			this.dots.push(data);
-		},
 		async saveConnect() {
 			const response = await axios.post('/api/products/save', {
 				currentProduct: this.currentProduct,
 				dots: this.dots,
+				usedMaterial: this.usedMaterial,
 			});
 			this.dots.length = 0;
 		},
-		async deploymentDot(val) {
-			const response = await axios.post('/api/products/current', { id: val });
-			for (let i = 1; i <= this.allCanvasDot; i++) {
-				const currentcolor = response.data[i - 1];
-				this.color.push(currentcolor);
-			}
-		},
-		async beforeCurrentReset() {
-			this.color.length = 0;
-			for (let i = 1; i <= this.allCanvasDot; i++) {
-				this.color.push('white');
-			}
-			this.$nextTick(function() {
-				this.color.length = 0;
-			});
-			await this.sleep();
+		saveProduct(data) {
+			//このdataは子コンポーネントDotから送られてくる
+			this.dots.push(data);
 		},
 		sleep() {
 			return new Promise(resolve => {
@@ -132,6 +134,53 @@ export default {
 					resolve();
 				}, 250);
 			});
+		},
+
+		//ツール系メソッド-----↓↓↓
+		drawReset() {
+			const answer = confirm('初期化してもよろしいですか？');
+			if (answer) {
+				this.color.length = 0;
+				for (let i = 1; i <= this.allCanvasDot; i++) {
+					this.color.push('white');
+					this.$nextTick(function() {
+						this.color.length = 0;
+					});
+				}
+			}
+		},
+		drawStamp(start) {
+			if (this.currentMaterial.alldot > this.allCanvasDot) {
+				alert('スタンプが描画領域よりも大きいです！');
+			} else if (
+				start % this.lineDotVolume > this.lineDotVolume - this.currentMaterial.linedot + 1 ||
+				start / this.lineDotVolume > this.lineDotVolume - this.currentMaterial.linedot + 1
+			) {
+				alert('この位置では描画領域よりはみ出してしまいます！');
+			} else {
+				const lineEnd = start + this.currentMaterial.linedot;
+				for (let i = 0; i < this.currentMaterial.linedot; i++) {
+					for (let j = start; j <= lineEnd; j++) {
+						this.color[j + i * this.lineDotVolume - 1] = this.materialColor[
+							j - start + i * this.currentMaterial.linedot
+						];
+					}
+				}
+				if (!this.usedMaterial.includes(this.currentMaterial.id)) {
+					this.$store.commit('maincanvas/setSaveMaterial', this.currentMaterial.id);
+				}
+			}
+		},
+		fillDraw() {
+			let checkInvalid = true;
+			for (let i = 0; i <= this.lineDotVolume; i++) {
+				for (let j = 1; j <= this.lineDotVolume; j++) {
+					if (this.color[j + i * this.lineDotVolume - 1] == this.fillColor) {
+						this.color[j + i * this.lineDotVolume - 1] = this.drawingColor;
+					}
+				}
+			}
+			this.fillColor = null;
 		},
 		lineDraw() {
 			const startNumber = Math.min(this.firstClick, this.secondClick);
@@ -159,6 +208,11 @@ export default {
 			}
 			this.firstClick = null;
 			this.secondClick = null;
+		},
+		setMaterialColor() {
+			const colors = this.currentMaterial.colors.split('_');
+			colors.pop();
+			this.materialColor = colors;
 		},
 		squareDraw() {
 			const startNumber = Math.min(this.firstClick, this.secondClick); //変数定義が重複しているがよりよい書き方がわからないため放置
@@ -196,56 +250,7 @@ export default {
 			this.firstClick = null;
 			this.secondClick = null;
 		},
-		fillDraw() {
-			let checkInvalid = true;
-			for (let i = 0; i <= this.lineDotVolume; i++) {
-				for (let j = 1; j <= this.lineDotVolume; j++) {
-					if (this.color[j + i * this.lineDotVolume - 1] == this.fillColor) {
-						this.color[j + i * this.lineDotVolume - 1] = this.drawingColor;
-					}
-				}
-			}
-			this.fillColor = null;
-		},
-		drawStamp(start) {
-			if (this.currentMaterial.alldot > this.allCanvasDot) {
-				alert('スタンプが描画領域よりも大きいです！');
-			} else if (
-				start % this.lineDotVolume > this.lineDotVolume - this.currentMaterial.linedot + 1 ||
-				start / this.lineDotVolume > this.lineDotVolume - this.currentMaterial.linedot + 1
-			) {
-				alert('この位置では描画領域よりはみ出してしまいます！');
-			} else {
-				const lineEnd = start + this.currentMaterial.linedot;
-				for (let i = 0; i < this.currentMaterial.linedot; i++) {
-					for (let j = start; j <= lineEnd; j++) {
-						this.color[j + i * this.lineDotVolume - 1] = this.materialColor[
-							j - start + i * this.currentMaterial.linedot
-						];
-					}
-				}
-				if (!this.saveMaterial.includes(this.currentMaterial.id)) {
-					this.$store.commit('maincanvas/setSaveMaterial', this.currentMaterial.id);
-				}
-			}
-		},
-		drawReset() {
-			const answer = confirm('初期化してもよろしいですか？');
-			if (answer) {
-				this.color.length = 0;
-				for (let i = 1; i <= this.allCanvasDot; i++) {
-					this.color.push('white');
-					this.$nextTick(function() {
-						this.color.length = 0;
-					});
-				}
-			}
-		},
-		setMaterialColor() {
-			const colors = this.currentMaterial.colors.split('_');
-			colors.pop();
-			this.materialColor = colors;
-		},
+		//ツール系メソッド-----↑↑↑
 	},
 };
 </script>

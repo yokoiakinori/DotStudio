@@ -58,10 +58,15 @@ class ProductController extends Controller
 		$currentid = $request->currentProduct;
 		$product = Product::with('user')->where('id', $currentid)->first();
 		$color = "";
+		$usedmaterial = "";
 		foreach ($request['dots'] as $item) {
 			$color = $color . $item['color'] . '_';
 		}
+		foreach ($request['usedMaterial'] as $item) {
+			$usedmaterial = $usedmaterial . $item . '_';
+		}
 		$product->colors = $color;
+		$product->usedmaterial = $usedmaterial;
 		$product->save();
 	}
 
@@ -81,6 +86,10 @@ class ProductController extends Controller
 	public function show(String $id)
 	{
 		$product = Product::where('id', $id)->with('user', 'comments.user', 'likes', 'producttags')->first();
+		$uesdMaterialList = explode("_", $product->usedmaterial);
+		array_pop($uesdMaterialList);
+		$usedMaterials = Product::with('user')->whereIn('id', $uesdMaterialList)->orderBy(Product::CREATED_AT, 'desc')->get();
+		$product->usedmaterial = $usedMaterials;
 		return $product ?? abort(404);
 	}
 

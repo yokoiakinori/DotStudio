@@ -59,6 +59,20 @@ export default {
 		Pagination,
 		ProductTag,
 	},
+	data() {
+		return {
+			currentPage: 0,
+			currentProduct: 0,
+			id: 0,
+			lastPage: 0,
+			linedot: 0,
+			modalWindow: false,
+			productionList: [],
+			productname: '',
+			productTags: [],
+			producttagstring: '',
+		};
+	},
 	computed: {
 		alldot: function() {
 			return this.linedot ** 2;
@@ -67,21 +81,18 @@ export default {
 			return this.productionList[0];
 		},
 	},
-	data() {
-		return {
-			modalWindow: false,
-			id: 0,
-			productname: '',
-			linedot: 0,
-			producttagstring: '',
-			currentPage: 0,
-			lastPage: 0,
-			productionList: [],
-			productTags: [],
-			currentProduct: 0,
-		};
-	},
 	watch: {
+		$route: {
+			async handler() {
+				await this.reset();
+				await this.showProductsList();
+				this.$store.commit('randing/loadingSwitch', false);
+			},
+			immediate: true,
+		},
+		currentPage: function(val) {
+			this.id = (val - 1) * 3 + this.productionList.length + 1;
+		},
 		currentProduct(val) {
 			const currentProductNumber = val - (this.$route.query.page - 1) * 3;
 			const current = this.productionList[currentProductNumber - 1];
@@ -96,26 +107,8 @@ export default {
 			const productTags = val.split(/\s+/);
 			this.productTags = productTags;
 		},
-		currentPage: function(val) {
-			this.id = (val - 1) * 3 + this.productionList.length + 1;
-		},
-		$route: {
-			async handler() {
-				await this.reset();
-				await this.showProductsList();
-				this.$store.commit('randing/loadingSwitch', false);
-			},
-			immediate: true,
-		},
 	},
 	methods: {
-		reset() {
-			this.linedot = 0;
-			this.productname = null;
-			this.productTags.length = 0;
-			this.producttagstring = '';
-		},
-
 		async createProduction() {
 			const createProduct = {
 				productname: this.productname,
@@ -150,12 +143,25 @@ export default {
 			}
 			this.id++;
 		},
-
 		modalToggle() {
 			this.reset();
 			this.modalWindow = !this.modalWindow;
 		},
-
+		productSave() {
+			this.$store.commit('maincanvas/productSave');
+		},
+		async productDelete() {
+			const productid = this.currentProduct - (this.currentPage - 1) * 3 - 1;
+			const response = await axios.get(`/api/products/delete/${this.productionList[productid].id}`);
+			this.productionList.splice(productid, 1);
+			this.id -= 1;
+		},
+		reset() {
+			this.linedot = 0;
+			this.productname = null;
+			this.productTags.length = 0;
+			this.producttagstring = '';
+		},
 		async showProductsList() {
 			this.productionList.length = 0;
 			const response = await axios.get(`/api/products?page=${this.$route.query.page}`);
@@ -178,16 +184,6 @@ export default {
 
 			this.currentPage = response.data.current_page;
 			this.lastPage = response.data.last_page;
-		},
-
-		productSave() {
-			this.$store.commit('maincanvas/productSave');
-		},
-		async productDelete() {
-			const productid = this.currentProduct - (this.currentPage - 1) * 3 - 1;
-			const response = await axios.get(`/api/products/delete/${this.productionList[productid].id}`);
-			this.productionList.splice(productid, 1);
-			this.id -= 1;
 		},
 	},
 };

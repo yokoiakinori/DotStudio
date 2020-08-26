@@ -2398,6 +2398,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
+      currentToolId: 0,
       tools: [{
         id: 0,
         "class": 'fas fa-paint-brush brush',
@@ -2430,8 +2431,7 @@ __webpack_require__.r(__webpack_exports__);
         id: 7,
         "class": 'fas fa-ban',
         name: 'reset'
-      }],
-      currentToolId: 0
+      }]
     };
   },
   methods: {
@@ -2811,10 +2811,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   props: {
-    drawingJudgement: Boolean,
-    lineDotVolume: Number,
+    color: String,
     dotid: Number,
-    color: String
+    drawingJudgement: Boolean,
+    lineDotVolume: Number
   },
   data: function data() {
     return {
@@ -2840,6 +2840,11 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   watch: {
+    color: function color(val) {
+      if (typeof val == 'string') {
+        this.dotStyle.backgroundColor = val;
+      }
+    },
     lineDotVolume: function lineDotVolume(val) {
       this.dotStyle.width = 100 / val + '%';
       this.dotStyle.height = 100 / val + '%';
@@ -2849,11 +2854,6 @@ __webpack_require__.r(__webpack_exports__);
         id: this.dotid,
         color: this.dotStyle.backgroundColor
       });
-    },
-    color: function color(val) {
-      if (typeof val == 'string') {
-        this.dotStyle.backgroundColor = val;
-      }
     }
   },
   computed: Object(vuex__WEBPACK_IMPORTED_MODULE_0__["mapState"])({
@@ -2916,43 +2916,38 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   data: function data() {
     return {
-      drawingJudgement: false,
       allCanvasDot: 0,
-      lineDotVolume: 0,
-      dots: [],
       color: [],
-      firstClick: null,
-      secondClick: null,
+      dots: [],
+      drawingJudgement: false,
       fillColor: null,
-      materialColor: null
+      firstClick: null,
+      lineDotVolume: 0,
+      materialColor: null,
+      secondClick: null
     };
   },
   computed: Object(vuex__WEBPACK_IMPORTED_MODULE_2__["mapState"])({
-    saveStatus: function saveStatus(state) {
-      return state.maincanvas.saveStatus;
+    currentMaterial: function currentMaterial(state) {
+      return state.maincanvas.currentMaterial;
     },
     currentProduct: function currentProduct(state) {
       return state.maincanvas.currentProduct;
     },
-    drawingTool: function drawingTool(state) {
-      return state.maincanvas.drawingTool;
-    },
     drawingColor: function drawingColor(state) {
       return state.maincanvas.drawingColor;
     },
-    currentMaterial: function currentMaterial(state) {
-      return state.maincanvas.currentMaterial;
+    drawingTool: function drawingTool(state) {
+      return state.maincanvas.drawingTool;
     },
-    saveMaterial: function saveMaterial(state) {
+    saveStatus: function saveStatus(state) {
+      return state.maincanvas.saveStatus;
+    },
+    usedMaterial: function usedMaterial(state) {
       return state.maincanvas.saveMaterial;
     }
   }),
   watch: {
-    saveStatus: function saveStatus() {
-      this.$nextTick(function () {
-        this.saveConnect();
-      });
-    },
     currentProduct: function currentProduct(val) {
       var _this = this;
 
@@ -2982,10 +2977,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee);
       }))();
     },
+    currentMaterial: function currentMaterial() {
+      this.setMaterialColor();
+    },
     drawingTool: function drawingTool(val) {
       if (val == 'reset') {
         this.drawReset();
       }
+    },
+    fillColor: function fillColor() {
+      this.fillDraw();
+    },
+    saveStatus: function saveStatus() {
+      this.$nextTick(function () {
+        this.saveConnect();
+      });
     },
     secondClick: function secondClick() {
       if (this.drawingTool == 'line') {
@@ -2995,54 +3001,32 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       } else if (this.drawingTool == 'squareline') {
         this.squarelineDraw();
       }
-    },
-    fillColor: function fillColor() {
-      this.fillDraw();
-    },
-    currentMaterial: function currentMaterial() {
-      this.setMaterialColor();
     }
   },
   methods: {
-    dragStart: function dragStart(val) {
-      this.drawingJudgement = true;
-
-      if (['line', 'square', 'squareline'].includes(this.drawingTool) && this.firstClick == null) {
-        this.firstClick = val;
-      } else if (['line', 'square', 'squareline'].includes(this.drawingTool) && this.secondClick == null) {
-        this.secondClick = val; //check [watch:secondClick()]
-      } else if (this.drawingTool == 'fill') {
-        this.fillColor = this.color[val - 1]; //check [watch:fillColor()]
-      } else if (this.drawingTool == 'stamp') {
-        this.drawStamp(val);
-      }
-    },
-    dragEnd: function dragEnd() {
-      this.drawingJudgement = false;
-    },
-    saveProduct: function saveProduct(data) {
-      this.dots.push(data);
-    },
-    saveConnect: function saveConnect() {
+    beforeCurrentReset: function beforeCurrentReset() {
       var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-        var response;
+        var i;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                _context2.next = 2;
-                return axios.post('/api/products/save', {
-                  currentProduct: _this2.currentProduct,
-                  dots: _this2.dots
+                _this2.color.length = 0;
+
+                for (i = 1; i <= _this2.allCanvasDot; i++) {
+                  _this2.color.push('white');
+                }
+
+                _this2.$nextTick(function () {
+                  this.color.length = 0;
                 });
 
-              case 2:
-                response = _context2.sent;
-                _this2.dots.length = 0;
+                _context2.next = 5;
+                return _this2.sleep();
 
-              case 4:
+              case 5:
               case "end":
                 return _context2.stop();
             }
@@ -3081,29 +3065,43 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee3);
       }))();
     },
-    beforeCurrentReset: function beforeCurrentReset() {
+    dragStart: function dragStart(val) {
+      this.drawingJudgement = true;
+
+      if (['line', 'square', 'squareline'].includes(this.drawingTool) && this.firstClick == null) {
+        this.firstClick = val;
+      } else if (['line', 'square', 'squareline'].includes(this.drawingTool) && this.secondClick == null) {
+        this.secondClick = val; //check [watch:secondClick()]
+      } else if (this.drawingTool == 'fill') {
+        this.fillColor = this.color[val - 1]; //check [watch:fillColor()]
+      } else if (this.drawingTool == 'stamp') {
+        this.drawStamp(val);
+      }
+    },
+    dragEnd: function dragEnd() {
+      this.drawingJudgement = false;
+    },
+    saveConnect: function saveConnect() {
       var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
-        var i;
+        var response;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
-                _this4.color.length = 0;
-
-                for (i = 1; i <= _this4.allCanvasDot; i++) {
-                  _this4.color.push('white');
-                }
-
-                _this4.$nextTick(function () {
-                  this.color.length = 0;
+                _context4.next = 2;
+                return axios.post('/api/products/save', {
+                  currentProduct: _this4.currentProduct,
+                  dots: _this4.dots,
+                  usedMaterial: _this4.usedMaterial
                 });
 
-                _context4.next = 5;
-                return _this4.sleep();
+              case 2:
+                response = _context4.sent;
+                _this4.dots.length = 0;
 
-              case 5:
+              case 4:
               case "end":
                 return _context4.stop();
             }
@@ -3111,12 +3109,63 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee4);
       }))();
     },
+    saveProduct: function saveProduct(data) {
+      //このdataは子コンポーネントDotから送られてくる
+      this.dots.push(data);
+    },
     sleep: function sleep() {
       return new Promise(function (resolve) {
         setTimeout(function () {
           resolve();
         }, 250);
       });
+    },
+    //ツール系メソッド-----↓↓↓
+    drawReset: function drawReset() {
+      var answer = confirm('初期化してもよろしいですか？');
+
+      if (answer) {
+        this.color.length = 0;
+
+        for (var i = 1; i <= this.allCanvasDot; i++) {
+          this.color.push('white');
+          this.$nextTick(function () {
+            this.color.length = 0;
+          });
+        }
+      }
+    },
+    drawStamp: function drawStamp(start) {
+      if (this.currentMaterial.alldot > this.allCanvasDot) {
+        alert('スタンプが描画領域よりも大きいです！');
+      } else if (start % this.lineDotVolume > this.lineDotVolume - this.currentMaterial.linedot + 1 || start / this.lineDotVolume > this.lineDotVolume - this.currentMaterial.linedot + 1) {
+        alert('この位置では描画領域よりはみ出してしまいます！');
+      } else {
+        var lineEnd = start + this.currentMaterial.linedot;
+
+        for (var i = 0; i < this.currentMaterial.linedot; i++) {
+          for (var j = start; j <= lineEnd; j++) {
+            this.color[j + i * this.lineDotVolume - 1] = this.materialColor[j - start + i * this.currentMaterial.linedot];
+          }
+        }
+
+        if (!this.usedMaterial.includes(this.currentMaterial.id)) {
+          this.$store.commit('maincanvas/setSaveMaterial', this.currentMaterial.id);
+        }
+      }
+    },
+    fillDraw: function fillDraw() {
+      var checkInvalid = true;
+
+      for (var i = 0; i <= this.lineDotVolume; i++) {
+        for (var j = 1; j <= this.lineDotVolume; j++) {
+          if (this.color[j + i * this.lineDotVolume - 1] == this.fillColor) {
+            this.color[j + i * this.lineDotVolume - 1] = this.drawingColor;
+          }
+        }
+      }
+
+      this.fillColor = null;
     },
     lineDraw: function lineDraw() {
       var startNumber = Math.min(this.firstClick, this.secondClick);
@@ -3145,6 +3194,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       this.firstClick = null;
       this.secondClick = null;
+    },
+    setMaterialColor: function setMaterialColor() {
+      var colors = this.currentMaterial.colors.split('_');
+      colors.pop();
+      this.materialColor = colors;
     },
     squareDraw: function squareDraw() {
       var startNumber = Math.min(this.firstClick, this.secondClick); //変数定義が重複しているがよりよい書き方がわからないため放置
@@ -3190,58 +3244,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
       this.firstClick = null;
       this.secondClick = null;
-    },
-    fillDraw: function fillDraw() {
-      var checkInvalid = true;
+    } //ツール系メソッド-----↑↑↑
 
-      for (var i = 0; i <= this.lineDotVolume; i++) {
-        for (var j = 1; j <= this.lineDotVolume; j++) {
-          if (this.color[j + i * this.lineDotVolume - 1] == this.fillColor) {
-            this.color[j + i * this.lineDotVolume - 1] = this.drawingColor;
-          }
-        }
-      }
-
-      this.fillColor = null;
-    },
-    drawStamp: function drawStamp(start) {
-      if (this.currentMaterial.alldot > this.allCanvasDot) {
-        alert('スタンプが描画領域よりも大きいです！');
-      } else if (start % this.lineDotVolume > this.lineDotVolume - this.currentMaterial.linedot + 1 || start / this.lineDotVolume > this.lineDotVolume - this.currentMaterial.linedot + 1) {
-        alert('この位置では描画領域よりはみ出してしまいます！');
-      } else {
-        var lineEnd = start + this.currentMaterial.linedot;
-
-        for (var i = 0; i < this.currentMaterial.linedot; i++) {
-          for (var j = start; j <= lineEnd; j++) {
-            this.color[j + i * this.lineDotVolume - 1] = this.materialColor[j - start + i * this.currentMaterial.linedot];
-          }
-        }
-
-        if (!this.saveMaterial.includes(this.currentMaterial.id)) {
-          this.$store.commit('maincanvas/setSaveMaterial', this.currentMaterial.id);
-        }
-      }
-    },
-    drawReset: function drawReset() {
-      var answer = confirm('初期化してもよろしいですか？');
-
-      if (answer) {
-        this.color.length = 0;
-
-        for (var i = 1; i <= this.allCanvasDot; i++) {
-          this.color.push('white');
-          this.$nextTick(function () {
-            this.color.length = 0;
-          });
-        }
-      }
-    },
-    setMaterialColor: function setMaterialColor() {
-      var colors = this.currentMaterial.colors.split('_');
-      colors.pop();
-      this.materialColor = colors;
-    }
   }
 });
 
@@ -3581,6 +3585,20 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     Pagination: _Pagination_vue__WEBPACK_IMPORTED_MODULE_2__["default"],
     ProductTag: _ProductTag_vue__WEBPACK_IMPORTED_MODULE_3__["default"]
   },
+  data: function data() {
+    return {
+      currentPage: 0,
+      currentProduct: 0,
+      id: 0,
+      lastPage: 0,
+      linedot: 0,
+      modalWindow: false,
+      productionList: [],
+      productname: '',
+      productTags: [],
+      producttagstring: ''
+    };
+  },
   computed: {
     alldot: function alldot() {
       return Math.pow(this.linedot, 2);
@@ -3589,38 +3607,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return this.productionList[0];
     }
   },
-  data: function data() {
-    return {
-      modalWindow: false,
-      id: 0,
-      productname: '',
-      linedot: 0,
-      producttagstring: '',
-      currentPage: 0,
-      lastPage: 0,
-      productionList: [],
-      productTags: [],
-      currentProduct: 0
-    };
-  },
   watch: {
-    currentProduct: function currentProduct(val) {
-      var currentProductNumber = val - (this.$route.query.page - 1) * 3;
-      var current = this.productionList[currentProductNumber - 1];
-      this.$store.commit('maincanvas/setCurrentProduct', {
-        alldot: current.alldot,
-        linedot: current.linedot,
-        id: current.id,
-        usedmaterial: current.usedmaterial
-      });
-    },
-    producttagstring: function producttagstring(val) {
-      var productTags = val.split(/\s+/);
-      this.productTags = productTags;
-    },
-    currentPage: function currentPage(val) {
-      this.id = (val - 1) * 3 + this.productionList.length + 1;
-    },
     $route: {
       handler: function handler() {
         var _this = this;
@@ -3649,15 +3636,26 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }))();
       },
       immediate: true
+    },
+    currentPage: function currentPage(val) {
+      this.id = (val - 1) * 3 + this.productionList.length + 1;
+    },
+    currentProduct: function currentProduct(val) {
+      var currentProductNumber = val - (this.$route.query.page - 1) * 3;
+      var current = this.productionList[currentProductNumber - 1];
+      this.$store.commit('maincanvas/setCurrentProduct', {
+        alldot: current.alldot,
+        linedot: current.linedot,
+        id: current.id,
+        usedmaterial: current.usedmaterial
+      });
+    },
+    producttagstring: function producttagstring(val) {
+      var productTags = val.split(/\s+/);
+      this.productTags = productTags;
     }
   },
   methods: {
-    reset: function reset() {
-      this.linedot = 0;
-      this.productname = null;
-      this.productTags.length = 0;
-      this.producttagstring = '';
-    },
     createProduction: function createProduction() {
       var _this2 = this;
 
@@ -3725,44 +3723,30 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.reset();
       this.modalWindow = !this.modalWindow;
     },
-    showProductsList: function showProductsList() {
+    productSave: function productSave() {
+      this.$store.commit('maincanvas/productSave');
+    },
+    productDelete: function productDelete() {
       var _this3 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-        var response, i;
+        var productid, response;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
           while (1) {
             switch (_context3.prev = _context3.next) {
               case 0:
-                _this3.productionList.length = 0;
+                productid = _this3.currentProduct - (_this3.currentPage - 1) * 3 - 1;
                 _context3.next = 3;
-                return axios.get("/api/products?page=".concat(_this3.$route.query.page));
+                return axios.get("/api/products/delete/".concat(_this3.productionList[productid].id));
 
               case 3:
                 response = _context3.sent;
 
-                if (!response.data.data.length == 0) {
-                  _this3.currentProduct = (_this3.$route.query.page - 1) * 3 + 1;
+                _this3.productionList.splice(productid, 1);
 
-                  for (i = 0; i < response.data.data.length; i++) {
-                    _this3.productionList.push(response.data.data[i]);
+                _this3.id -= 1;
 
-                    _this3.productionList[i].myproductid = i + (_this3.$route.query.page - 1) * 3 + 1;
-                  }
-
-                  _this3.id = _this3.productionList.length + 1;
-
-                  _this3.$store.commit('maincanvas/setCurrentProduct', {
-                    alldot: _this3.defaultProduct.alldot,
-                    linedot: _this3.defaultProduct.linedot,
-                    id: _this3.productionList[0].id
-                  });
-                }
-
-                _this3.currentPage = response.data.current_page;
-                _this3.lastPage = response.data.last_page;
-
-              case 7:
+              case 6:
               case "end":
                 return _context3.stop();
             }
@@ -3770,30 +3754,50 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee3);
       }))();
     },
-    productSave: function productSave() {
-      this.$store.commit('maincanvas/productSave');
+    reset: function reset() {
+      this.linedot = 0;
+      this.productname = null;
+      this.productTags.length = 0;
+      this.producttagstring = '';
     },
-    productDelete: function productDelete() {
+    showProductsList: function showProductsList() {
       var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
-        var productid, response;
+        var response, i;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee4$(_context4) {
           while (1) {
             switch (_context4.prev = _context4.next) {
               case 0:
-                productid = _this4.currentProduct - (_this4.currentPage - 1) * 3 - 1;
+                _this4.productionList.length = 0;
                 _context4.next = 3;
-                return axios.get("/api/products/delete/".concat(_this4.productionList[productid].id));
+                return axios.get("/api/products?page=".concat(_this4.$route.query.page));
 
               case 3:
                 response = _context4.sent;
 
-                _this4.productionList.splice(productid, 1);
+                if (!response.data.data.length == 0) {
+                  _this4.currentProduct = (_this4.$route.query.page - 1) * 3 + 1;
 
-                _this4.id -= 1;
+                  for (i = 0; i < response.data.data.length; i++) {
+                    _this4.productionList.push(response.data.data[i]);
 
-              case 6:
+                    _this4.productionList[i].myproductid = i + (_this4.$route.query.page - 1) * 3 + 1;
+                  }
+
+                  _this4.id = _this4.productionList.length + 1;
+
+                  _this4.$store.commit('maincanvas/setCurrentProduct', {
+                    alldot: _this4.defaultProduct.alldot,
+                    linedot: _this4.defaultProduct.linedot,
+                    id: _this4.productionList[0].id
+                  });
+                }
+
+                _this4.currentPage = response.data.current_page;
+                _this4.lastPage = response.data.last_page;
+
+              case 7:
               case "end":
                 return _context4.stop();
             }
@@ -4357,53 +4361,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   components: {
     AllProducts: _components_AllProducts_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
-  data: function data() {
-    return {
-      products: [],
-      currentPage: 0,
-      lastPage: 0,
-      routerPath: '/'
-    };
-  },
-  methods: {
-    showProducts: function showProducts() {
-      var _this = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.next = 2;
-                return axios.get("/api/products/index/?page=".concat(_this.page));
-
-              case 2:
-                response = _context.sent;
-
-                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_3__["OK"])) {
-                  _context.next = 6;
-                  break;
-                }
-
-                _this.$store.commit('error/setCode', response.status);
-
-                return _context.abrupt("return", false);
-
-              case 6:
-                _this.products = response.data.data;
-                _this.currentPage = response.data.current_page;
-                _this.lastPage = response.data.last_page;
-
-              case 9:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }))();
-    }
-  },
   props: {
     page: {
       type: Number,
@@ -4411,33 +4368,80 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       "default": 1
     }
   },
+  data: function data() {
+    return {
+      currentPage: 0,
+      lastPage: 0,
+      products: [],
+      routerPath: '/'
+    };
+  },
   watch: {
     $route: {
       handler: function handler() {
-        var _this2 = this;
+        var _this = this;
 
-        return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+        return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
             while (1) {
-              switch (_context2.prev = _context2.next) {
+              switch (_context.prev = _context.next) {
                 case 0:
-                  _this2.$store.commit('randing/loadingSwitch', true);
+                  _this.$store.commit('randing/loadingSwitch', true);
 
-                  _context2.next = 3;
-                  return _this2.showProducts();
+                  _context.next = 3;
+                  return _this.showProducts();
 
                 case 3:
-                  _this2.$store.commit('randing/loadingSwitch', false);
+                  _this.$store.commit('randing/loadingSwitch', false);
 
                 case 4:
                 case "end":
-                  return _context2.stop();
+                  return _context.stop();
               }
             }
-          }, _callee2);
+          }, _callee);
         }))();
       },
       immediate: true
+    }
+  },
+  methods: {
+    showProducts: function showProducts() {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        var response;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return axios.get("/api/products/index/?page=".concat(_this2.page));
+
+              case 2:
+                response = _context2.sent;
+
+                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_3__["OK"])) {
+                  _context2.next = 6;
+                  break;
+                }
+
+                _this2.$store.commit('error/setCode', response.status);
+
+                return _context2.abrupt("return", false);
+
+              case 6:
+                _this2.products = response.data.data;
+                _this2.currentPage = response.data.current_page;
+                _this2.lastPage = response.data.last_page;
+
+              case 9:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
     }
   }
 });
@@ -4555,6 +4559,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   methods: {
+    clearError: function clearError() {
+      this.$store.commit('auth/setLoginErrorMessages', null);
+      this.$store.commit('auth/setRegisterErrorMessages', null);
+    },
     login: function login() {
       var _this = this;
 
@@ -4602,10 +4610,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }, _callee2);
       }))();
-    },
-    clearError: function clearError() {
-      this.$store.commit('auth/setLoginErrorMessages', null);
-      this.$store.commit('auth/setRegisterErrorMessages', null);
     }
   },
   created: function created() {
@@ -4759,85 +4763,85 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       notifications: []
     };
   },
+  watch: {
+    $route: {
+      handler: function handler() {
+        var _this = this;
+
+        return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _this.$store.commit('randing/loadingSwitch', true);
+
+                  _context.next = 3;
+                  return _this.showNotifications();
+
+                case 3:
+                  _this.$store.commit('randing/loadingSwitch', false);
+
+                case 4:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }))();
+      },
+      immediate: true
+    }
+  },
   methods: {
     showNotifications: function showNotifications() {
-      var _this = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.next = 2;
-                return axios.get('/api/notification');
-
-              case 2:
-                response = _context.sent;
-                _this.notifications = response.data;
-
-              case 4:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }))();
-    },
-    deleteNotification: function deleteNotification(index) {
       var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-        var id, response;
+        var response;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                id = _this2.notifications[index].id;
-                _context2.next = 3;
-                return axios["delete"]("/api/notification/".concat(id));
+                _context2.next = 2;
+                return axios.get('/api/notification');
 
-              case 3:
+              case 2:
                 response = _context2.sent;
+                _this2.notifications = response.data;
 
-                _this2.notifications.splice(index, 1);
-
-              case 5:
+              case 4:
               case "end":
                 return _context2.stop();
             }
           }
         }, _callee2);
       }))();
-    }
-  },
-  watch: {
-    $route: {
-      handler: function handler() {
-        var _this3 = this;
+    },
+    deleteNotification: function deleteNotification(index) {
+      var _this3 = this;
 
-        return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
-            while (1) {
-              switch (_context3.prev = _context3.next) {
-                case 0:
-                  _this3.$store.commit('randing/loadingSwitch', true);
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var id, response;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                id = _this3.notifications[index].id;
+                _context3.next = 3;
+                return axios["delete"]("/api/notification/".concat(id));
 
-                  _context3.next = 3;
-                  return _this3.showNotifications();
+              case 3:
+                response = _context3.sent;
 
-                case 3:
-                  _this3.$store.commit('randing/loadingSwitch', false);
+                _this3.notifications.splice(index, 1);
 
-                case 4:
-                case "end":
-                  return _context3.stop();
-              }
+              case 5:
+              case "end":
+                return _context3.stop();
             }
-          }, _callee3);
-        }))();
-      },
-      immediate: true
+          }
+        }, _callee3);
+      }))();
     }
   }
 });
@@ -4915,6 +4919,11 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 //
 //
 //
+//
+//
+//
+//
+//
 
 
 
@@ -4949,43 +4958,37 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return this.product.user.id != this.$store.getters['auth/userid'];
     }
   },
+  watch: {
+    $route: {
+      handler: function handler() {
+        var _this = this;
+
+        return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _this.$store.commit('randing/loadingSwitch', true);
+
+                  _context.next = 3;
+                  return _this.showProduct();
+
+                case 3:
+                  _this.$store.commit('randing/loadingSwitch', false);
+
+                case 4:
+                case "end":
+                  return _context.stop();
+              }
+            }
+          }, _callee);
+        }))();
+      },
+      immediate: true
+    }
+  },
   methods: {
     showProduct: function showProduct() {
-      var _this = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.next = 2;
-                return axios.get("/api/product/".concat(_this.id));
-
-              case 2:
-                response = _context.sent;
-
-                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_2__["OK"])) {
-                  _context.next = 6;
-                  break;
-                }
-
-                _this.$store.commit('error/setCode', response.status);
-
-                return _context.abrupt("return", false);
-
-              case 6:
-                _this.product = response.data;
-
-              case 7:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }))();
-    },
-    addComment: function addComment() {
       var _this2 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
@@ -4995,27 +4998,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context2.prev = _context2.next) {
               case 0:
                 _context2.next = 2;
-                return axios.post("/api/products/".concat(_this2.id, "/comments"), {
-                  content: _this2.commentContent
-                });
+                return axios.get("/api/product/".concat(_this2.id));
 
               case 2:
                 response = _context2.sent;
 
-                if (!(response.status === _util__WEBPACK_IMPORTED_MODULE_2__["UNPROCESSABLE_ENTITY"])) {
+                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_2__["OK"])) {
                   _context2.next = 6;
-                  break;
-                }
-
-                _this2.commentErrors = response.data.errors;
-                return _context2.abrupt("return", false);
-
-              case 6:
-                _this2.commentContent = '';
-                _this2.commentErrors = null;
-
-                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_2__["CREATED"])) {
-                  _context2.next = 11;
                   break;
                 }
 
@@ -5023,15 +5012,64 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
                 return _context2.abrupt("return", false);
 
-              case 11:
-                _this2.product.comments = [response.data].concat(_toConsumableArray(_this2.product.comments));
+              case 6:
+                _this2.product = response.data;
 
-              case 12:
+              case 7:
               case "end":
                 return _context2.stop();
             }
           }
         }, _callee2);
+      }))();
+    },
+    addComment: function addComment() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var response;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _context3.next = 2;
+                return axios.post("/api/products/".concat(_this3.id, "/comments"), {
+                  content: _this3.commentContent
+                });
+
+              case 2:
+                response = _context3.sent;
+
+                if (!(response.status === _util__WEBPACK_IMPORTED_MODULE_2__["UNPROCESSABLE_ENTITY"])) {
+                  _context3.next = 6;
+                  break;
+                }
+
+                _this3.commentErrors = response.data.errors;
+                return _context3.abrupt("return", false);
+
+              case 6:
+                _this3.commentContent = '';
+                _this3.commentErrors = null;
+
+                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_2__["CREATED"])) {
+                  _context3.next = 11;
+                  break;
+                }
+
+                _this3.$store.commit('error/setCode', response.status);
+
+                return _context3.abrupt("return", false);
+
+              case 11:
+                _this3.product.comments = [response.data].concat(_toConsumableArray(_this3.product.comments));
+
+              case 12:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
       }))();
     },
     onLikeClick: function onLikeClick(_ref) {
@@ -5050,52 +5088,6 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       }
     },
     like: function like(id) {
-      var _this3 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-        var response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                _context3.next = 2;
-                return axios.put("/api/products/".concat(id, "/like"));
-
-              case 2:
-                response = _context3.sent;
-
-                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_2__["OK"])) {
-                  _context3.next = 6;
-                  break;
-                }
-
-                _this3.$store.commit('error/setCode', response.status);
-
-                return _context3.abrupt("return", false);
-
-              case 6:
-                _this3.products = _this3.products.map(function (product) {
-                  if (product.id == response.data.product_id) {
-                    product.likes_count += 1;
-                    product.liked_by_user = true;
-
-                    if (product.likes_count % 10 == 0 && product.likes_count >= 10) {
-                      _this3.likedNotification(product.productname, product.likes_count, product.user.id);
-                    }
-                  }
-
-                  return product;
-                });
-
-              case 7:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3);
-      }))();
-    },
-    unlike: function unlike(id) {
       var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
@@ -5105,7 +5097,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context4.prev = _context4.next) {
               case 0:
                 _context4.next = 2;
-                return axios["delete"]("/api/products/".concat(id, "/like"));
+                return axios.put("/api/products/".concat(id, "/like"));
 
               case 2:
                 response = _context4.sent;
@@ -5122,8 +5114,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 6:
                 _this4.products = _this4.products.map(function (product) {
                   if (product.id == response.data.product_id) {
-                    product.likes_count -= 1;
-                    product.liked_by_user = false;
+                    product.likes_count += 1;
+                    product.liked_by_user = true;
+
+                    if (product.likes_count % 10 == 0 && product.likes_count >= 10) {
+                      _this4.likedNotification(product.productname, product.likes_count, product.user.id);
+                    }
                   }
 
                   return product;
@@ -5137,29 +5133,71 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee4);
       }))();
     },
-    likedNotification: function likedNotification(name, count, id) {
+    unlike: function unlike(id) {
       var _this5 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
-        var responsse;
+        var response;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee5$(_context5) {
           while (1) {
             switch (_context5.prev = _context5.next) {
               case 0:
-                _this5.notification.id = id;
-                _this5.notification.message = "\u3042\u306A\u305F\u306E".concat(name, "\u304C").concat(count, "\u56DE\u3044\u3044\u306D\u3055\u308C\u307E\u3057\u305F\u3002");
-                _context5.next = 4;
-                return axios.post('/api/notification', _this5.notification);
+                _context5.next = 2;
+                return axios["delete"]("/api/products/".concat(id, "/like"));
 
-              case 4:
-                responsse = _context5.sent;
+              case 2:
+                response = _context5.sent;
 
-              case 5:
+                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_2__["OK"])) {
+                  _context5.next = 6;
+                  break;
+                }
+
+                _this5.$store.commit('error/setCode', response.status);
+
+                return _context5.abrupt("return", false);
+
+              case 6:
+                _this5.products = _this5.products.map(function (product) {
+                  if (product.id == response.data.product_id) {
+                    product.likes_count -= 1;
+                    product.liked_by_user = false;
+                  }
+
+                  return product;
+                });
+
+              case 7:
               case "end":
                 return _context5.stop();
             }
           }
         }, _callee5);
+      }))();
+    },
+    likedNotification: function likedNotification(name, count, id) {
+      var _this6 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
+        var responsse;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _this6.notification.id = id;
+                _this6.notification.message = "\u3042\u306A\u305F\u306E".concat(name, "\u304C").concat(count, "\u56DE\u3044\u3044\u306D\u3055\u308C\u307E\u3057\u305F\u3002");
+                _context6.next = 4;
+                return axios.post('/api/notification', _this6.notification);
+
+              case 4:
+                responsse = _context6.sent;
+
+              case 5:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6);
       }))();
     },
     onMaterialClick: function onMaterialClick() {
@@ -5171,65 +5209,36 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       this.materialAdd();
     },
     materialAdd: function materialAdd() {
-      var _this6 = this;
+      var _this7 = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee7() {
         var response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee7$(_context7) {
           while (1) {
-            switch (_context6.prev = _context6.next) {
+            switch (_context7.prev = _context7.next) {
               case 0:
-                _context6.next = 2;
-                return axios.put("/api/material/".concat(_this6.product.id));
+                _context7.next = 2;
+                return axios.put("/api/material/".concat(_this7.product.id));
 
               case 2:
-                response = _context6.sent;
+                response = _context7.sent;
 
                 if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_2__["OK"])) {
-                  _context6.next = 6;
+                  _context7.next = 6;
                   break;
                 }
 
-                _this6.$store.commit('error/setCode', response.status);
+                _this7.$store.commit('error/setCode', response.status);
 
-                return _context6.abrupt("return", false);
+                return _context7.abrupt("return", false);
 
               case 6:
               case "end":
-                return _context6.stop();
+                return _context7.stop();
             }
           }
-        }, _callee6);
+        }, _callee7);
       }))();
-    }
-  },
-  watch: {
-    $route: {
-      handler: function handler() {
-        var _this7 = this;
-
-        return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee7() {
-          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee7$(_context7) {
-            while (1) {
-              switch (_context7.prev = _context7.next) {
-                case 0:
-                  _this7.$store.commit('randing/loadingSwitch', true);
-
-                  _context7.next = 3;
-                  return _this7.showProduct();
-
-                case 3:
-                  _this7.$store.commit('randing/loadingSwitch', false);
-
-                case 4:
-                case "end":
-                  return _context7.stop();
-              }
-            }
-          }, _callee7);
-        }))();
-      },
-      immediate: true
     }
   }
 });
@@ -5410,6 +5419,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   components: {
     AllProducts: _components_AllProducts_vue__WEBPACK_IMPORTED_MODULE_1__["default"]
   },
+  props: {
+    page: {
+      type: Number,
+      required: false,
+      "default": 1
+    }
+  },
   data: function data() {
     return {
       products: [],
@@ -5423,83 +5439,76 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return state.search.tag;
     }
   }),
-  methods: {
-    showProducts: function showProducts() {
-      var _this = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.next = 2;
-                return axios.get("/api/tagsearch/?page=".concat(_this.page, "\b&tag=").concat(_this.searchTag));
-
-              case 2:
-                response = _context.sent;
-
-                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_3__["OK"])) {
-                  _context.next = 6;
-                  break;
-                }
-
-                _this.$store.commit('error/setCode', response.status);
-
-                return _context.abrupt("return", false);
-
-              case 6:
-                _this.products = response.data.data;
-                _this.currentPage = response.data.current_page;
-                _this.lastPage = response.data.last_page;
-
-              case 9:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }))();
-    }
-  },
   watch: {
     $route: {
       handler: function handler() {
-        var _this2 = this;
+        var _this = this;
 
-        return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+        return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
             while (1) {
-              switch (_context2.prev = _context2.next) {
+              switch (_context.prev = _context.next) {
                 case 0:
-                  if (_this2.searchTag == null) {
-                    _this2.$router.push('/');
+                  if (_this.searchTag == null) {
+                    _this.$router.push('/');
                   }
 
-                  _this2.$store.commit('randing/loadingSwitch', true);
+                  _this.$store.commit('randing/loadingSwitch', true);
 
-                  _context2.next = 4;
-                  return _this2.showProducts();
+                  _context.next = 4;
+                  return _this.showProducts();
 
                 case 4:
-                  _this2.$store.commit('randing/loadingSwitch', false);
+                  _this.$store.commit('randing/loadingSwitch', false);
 
                 case 5:
                 case "end":
-                  return _context2.stop();
+                  return _context.stop();
               }
             }
-          }, _callee2);
+          }, _callee);
         }))();
       },
       immediate: true
     }
   },
-  props: {
-    page: {
-      type: Number,
-      required: false,
-      "default": 1
+  methods: {
+    showProducts: function showProducts() {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        var response;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return axios.get("/api/tagsearch/?page=".concat(_this2.page, "\b&tag=").concat(_this2.searchTag));
+
+              case 2:
+                response = _context2.sent;
+
+                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_3__["OK"])) {
+                  _context2.next = 6;
+                  break;
+                }
+
+                _this2.$store.commit('error/setCode', response.status);
+
+                return _context2.abrupt("return", false);
+
+              case 6:
+                _this2.products = response.data.data;
+                _this2.currentPage = response.data.current_page;
+                _this2.lastPage = response.data.last_page;
+
+              case 9:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
     }
   }
 });
@@ -5594,21 +5603,21 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
   },
   data: function data() {
     return {
-      tab: 1,
-      user: {
-        name: String,
-        introduction: String,
-        thumbnail: String,
-        followCount: Number,
-        followerCount: Number
-      },
-      products: [],
       currentPage: 0,
       lastPage: 0,
       maxwidth: 900,
+      products: [],
       style: {
         width: '900px',
         height: '1500px'
+      },
+      tab: 1,
+      user: {
+        followCount: Number,
+        followerCount: Number,
+        introduction: String,
+        name: String,
+        thumbnail: String
       }
     };
   },
@@ -5624,45 +5633,61 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       return this.$store.getters['auth/userid'];
     }
   },
-  methods: {
-    showUser: function showUser() {
-      var _this = this;
+  watch: {
+    $route: {
+      handler: function handler() {
+        var _this = this;
 
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.next = 2;
-                return axios.get("/api/users/".concat(_this.id));
+        return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+            while (1) {
+              switch (_context.prev = _context.next) {
+                case 0:
+                  _this.$store.commit('randing/loadingSwitch', true);
 
-              case 2:
-                response = _context.sent;
+                  _context.next = 3;
+                  return _this.showUser();
 
-                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_4__["OK"])) {
-                  _context.next = 6;
-                  break;
-                }
+                case 3:
+                  _context.next = 5;
+                  return _this.showProducts();
 
-                _this.$store.commit('error/setCode', response.status);
+                case 5:
+                  _this.$store.commit('randing/loadingSwitch', false);
 
-                return _context.abrupt("return", false);
-
-              case 6:
-                _this.user.name = response.data[0].name;
-                _this.user.introduction = response.data[0].introduction;
-                _this.user.thumbnail = response.data[0].userthumbnail.url;
-                _this.user.followCount = response.data[1];
-                _this.user.followerCount = response.data[2];
-
-              case 11:
-              case "end":
-                return _context.stop();
+                case 6:
+                case "end":
+                  return _context.stop();
+              }
             }
-          }
-        }, _callee);
-      }))();
+          }, _callee);
+        }))();
+      },
+      immediate: true
+    },
+    tab: function tab(val) {
+      if (val == 1) {
+        this.showProducts();
+      } else {
+        this.showLikeProducts();
+      }
+    }
+  },
+  methods: {
+    onLikeClick: function onLikeClick(_ref) {
+      var id = _ref.id,
+          liked = _ref.liked;
+
+      if (!this.$store.getters['auth/check']) {
+        alert('いいね機能を使うにはログインしてください。');
+        return false;
+      }
+
+      if (liked) {
+        this.unlike(id);
+      } else {
+        this.like(id);
+      }
     },
     showProducts: function showProducts() {
       var _this2 = this;
@@ -5740,22 +5765,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee3);
       }))();
     },
-    onLikeClick: function onLikeClick(_ref) {
-      var id = _ref.id,
-          liked = _ref.liked;
-
-      if (!this.$store.getters['auth/check']) {
-        alert('いいね機能を使うにはログインしてください。');
-        return false;
-      }
-
-      if (liked) {
-        this.unlike(id);
-      } else {
-        this.like(id);
-      }
-    },
-    like: function like(id) {
+    showUser: function showUser() {
       var _this4 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee4() {
@@ -5765,7 +5775,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context4.prev = _context4.next) {
               case 0:
                 _context4.next = 2;
-                return axios.put("/api/products/".concat(id, "/like"));
+                return axios.get("/api/users/".concat(_this4.id));
 
               case 2:
                 response = _context4.sent;
@@ -5780,16 +5790,13 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
                 return _context4.abrupt("return", false);
 
               case 6:
-                _this4.products = _this4.products.map(function (product) {
-                  if (product.id == response.data.product_id) {
-                    product.likes_count += 1;
-                    product.liked_by_user = true;
-                  }
+                _this4.user.name = response.data[0].name;
+                _this4.user.introduction = response.data[0].introduction;
+                _this4.user.thumbnail = response.data[0].userthumbnail.url;
+                _this4.user.followCount = response.data[1];
+                _this4.user.followerCount = response.data[2];
 
-                  return product;
-                });
-
-              case 7:
+              case 11:
               case "end":
                 return _context4.stop();
             }
@@ -5797,7 +5804,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee4);
       }))();
     },
-    unlike: function unlike(id) {
+    like: function like(id) {
       var _this5 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee5() {
@@ -5807,7 +5814,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             switch (_context5.prev = _context5.next) {
               case 0:
                 _context5.next = 2;
-                return axios["delete"]("/api/products/".concat(id, "/like"));
+                return axios.put("/api/products/".concat(id, "/like"));
 
               case 2:
                 response = _context5.sent;
@@ -5824,8 +5831,8 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               case 6:
                 _this5.products = _this5.products.map(function (product) {
                   if (product.id == response.data.product_id) {
-                    product.likes_count -= 1;
-                    product.liked_by_user = false;
+                    product.likes_count += 1;
+                    product.liked_by_user = true;
                   }
 
                   return product;
@@ -5838,46 +5845,48 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }, _callee5);
       }))();
-    }
-  },
-  watch: {
-    $route: {
-      handler: function handler() {
-        var _this6 = this;
-
-        return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
-          return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
-            while (1) {
-              switch (_context6.prev = _context6.next) {
-                case 0:
-                  _this6.$store.commit('randing/loadingSwitch', true);
-
-                  _context6.next = 3;
-                  return _this6.showUser();
-
-                case 3:
-                  _context6.next = 5;
-                  return _this6.showProducts();
-
-                case 5:
-                  _this6.$store.commit('randing/loadingSwitch', false);
-
-                case 6:
-                case "end":
-                  return _context6.stop();
-              }
-            }
-          }, _callee6);
-        }))();
-      },
-      immediate: true
     },
-    tab: function tab(val) {
-      if (val == 1) {
-        this.showProducts();
-      } else {
-        this.showLikeProducts();
-      }
+    unlike: function unlike(id) {
+      var _this6 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee6() {
+        var response;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee6$(_context6) {
+          while (1) {
+            switch (_context6.prev = _context6.next) {
+              case 0:
+                _context6.next = 2;
+                return axios["delete"]("/api/products/".concat(id, "/like"));
+
+              case 2:
+                response = _context6.sent;
+
+                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_4__["OK"])) {
+                  _context6.next = 6;
+                  break;
+                }
+
+                _this6.$store.commit('error/setCode', response.status);
+
+                return _context6.abrupt("return", false);
+
+              case 6:
+                _this6.products = _this6.products.map(function (product) {
+                  if (product.id == response.data.product_id) {
+                    product.likes_count -= 1;
+                    product.liked_by_user = false;
+                  }
+
+                  return product;
+                });
+
+              case 7:
+              case "end":
+                return _context6.stop();
+            }
+          }
+        }, _callee6);
+      }))();
     }
   }
 });
@@ -5970,109 +5979,12 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     };
   },
   methods: {
-    showUser: function showUser() {
-      var _this = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
-        var response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _context.next = 2;
-                return axios.get("/api/users/".concat(_this.id));
-
-              case 2:
-                response = _context.sent;
-
-                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_3__["OK"])) {
-                  _context.next = 6;
-                  break;
-                }
-
-                _this.$store.commit('error/setCode', response.status);
-
-                return _context.abrupt("return", false);
-
-              case 6:
-                _this.user.name = response.data[0].name;
-                _this.user.introduction = response.data[0].introduction;
-                _this.user.thumbnail = response.data[0].userthumbnail.url;
-                _this.user.followCount = response.data[1];
-                _this.user.followerCount = response.data[2];
-
-              case 11:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }))();
-    },
-    profileUpdate: function profileUpdate() {
-      var _this2 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
-        var response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                _context2.next = 2;
-                return axios.post('/api/userupdate', _this2.updateForm);
-
-              case 2:
-                response = _context2.sent;
-
-                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_3__["OK"])) {
-                  _context2.next = 6;
-                  break;
-                }
-
-                _this2.$store.commit('error/setCode', response.status);
-
-                return _context2.abrupt("return", false);
-
-              case 6:
-                _this2.$store.commit('auth/updateUser', response);
-
-              case 7:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }))();
-    },
-    thumbnailUpdate: function thumbnailUpdate() {
-      var _this3 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
-        var formData, response;
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
-          while (1) {
-            switch (_context3.prev = _context3.next) {
-              case 0:
-                formData = new FormData();
-                formData.append('userthumbnail', _this3.thumbnail);
-                _context3.next = 4;
-                return axios.post('/api/thumbnail/update', formData);
-
-              case 4:
-                response = _context3.sent;
-
-                _this3.modalToggle();
-
-              case 6:
-              case "end":
-                return _context3.stop();
-            }
-          }
-        }, _callee3);
-      }))();
+    modalToggle: function modalToggle() {
+      this.reset();
+      this.modalWindow = !this.modalWindow;
     },
     onFileChange: function onFileChange(event) {
-      var _this4 = this;
+      var _this = this;
 
       // 何も選択されていなかったら処理中断
       if (event.target.files.length === 0) {
@@ -6094,7 +6006,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         // previewに値が入ると<output>につけたv-ifがtrueと判定される
         // また<output>内部の<img>のsrc属性はpreviewの値を参照しているので
         // 結果として画像が表示される
-        _this4.preview = e.target.result;
+        _this.preview = e.target.result;
       }; // ファイルを読み込む
       // 読み込まれたファイルはデータURL形式で受け取れる（上記onload参照）
 
@@ -6102,13 +6014,110 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       reader.readAsDataURL(event.target.files[0]);
       this.thumbnail = event.target.files[0];
     },
+    profileUpdate: function profileUpdate() {
+      var _this2 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var response;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _context.next = 2;
+                return axios.post('/api/userupdate', _this2.updateForm);
+
+              case 2:
+                response = _context.sent;
+
+                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_3__["OK"])) {
+                  _context.next = 6;
+                  break;
+                }
+
+                _this2.$store.commit('error/setCode', response.status);
+
+                return _context.abrupt("return", false);
+
+              case 6:
+                _this2.$store.commit('auth/updateUser', response);
+
+              case 7:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
     reset: function reset() {
       this.preview = '';
       this.thumbnail = null;
     },
-    modalToggle: function modalToggle() {
-      this.reset();
-      this.modalWindow = !this.modalWindow;
+    showUser: function showUser() {
+      var _this3 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee2() {
+        var response;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _context2.next = 2;
+                return axios.get("/api/users/".concat(_this3.id));
+
+              case 2:
+                response = _context2.sent;
+
+                if (!(response.status !== _util__WEBPACK_IMPORTED_MODULE_3__["OK"])) {
+                  _context2.next = 6;
+                  break;
+                }
+
+                _this3.$store.commit('error/setCode', response.status);
+
+                return _context2.abrupt("return", false);
+
+              case 6:
+                _this3.user.name = response.data[0].name;
+                _this3.user.introduction = response.data[0].introduction;
+                _this3.user.thumbnail = response.data[0].userthumbnail.url;
+                _this3.user.followCount = response.data[1];
+                _this3.user.followerCount = response.data[2];
+
+              case 11:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    thumbnailUpdate: function thumbnailUpdate() {
+      var _this4 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee3() {
+        var formData, response;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                formData = new FormData();
+                formData.append('userthumbnail', _this4.thumbnail);
+                _context3.next = 4;
+                return axios.post('/api/thumbnail/update', formData);
+
+              case 4:
+                response = _context3.sent;
+
+                _this4.modalToggle();
+
+              case 6:
+              case "end":
+                return _context3.stop();
+            }
+          }
+        }, _callee3);
+      }))();
     }
   },
   watch: {
@@ -11585,7 +11594,23 @@ var render = function() {
                   },
                   [_vm._v("\n\t\t\t素材としてダウンロード\n\t\t")]
                 )
-              : _vm._e()
+              : _vm._e(),
+            _vm._v(" "),
+            _c(
+              "ul",
+              _vm._l(_vm.product.usedmaterial, function(material) {
+                return _c("li", { key: material.id }, [
+                  _vm._v(
+                    "\n\t\t\t\t" +
+                      _vm._s(material.user.name) +
+                      "さんの" +
+                      _vm._s(material.productname) +
+                      "が使用されています。\n\t\t\t"
+                  )
+                ])
+              }),
+              0
+            )
           ]),
           _vm._v(" "),
           _c("div", { staticClass: "comments" }, [
@@ -33537,15 +33562,15 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var axios__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(axios__WEBPACK_IMPORTED_MODULE_0__);
 
 var state = {
+  allDotVolume: 900,
+  currentMaterial: {},
+  currentProduct: 0,
   drawingColor: 'black',
   drawingTool: 'brush',
-  allDotVolume: 900,
   lineDotVolume: 30,
-  currentProduct: 0,
+  saveMaterial: [],
   saveStatus: false,
-  currentMaterial: {},
-  usedMaterial: String,
-  saveMaterial: []
+  usedMaterial: String
 };
 var getters = {};
 var mutations = {
@@ -33555,12 +33580,6 @@ var mutations = {
   drawingTool: function drawingTool(state, tool) {
     state.drawingTool = tool;
   },
-  setCurrentProduct: function setCurrentProduct(state, current) {
-    state.allDotVolume = current.alldot;
-    state.lineDotVolume = current.linedot;
-    state.currentProduct = current.id;
-    state.usedMaterial = current.usedmaterial;
-  },
   productSave: function productSave(state) {
     state.saveStatus = !state.saveStatus;
   },
@@ -33569,6 +33588,12 @@ var mutations = {
   },
   setCurrentMaterial: function setCurrentMaterial(state, current) {
     state.currentMaterial = current;
+  },
+  setCurrentProduct: function setCurrentProduct(state, current) {
+    state.allDotVolume = current.alldot;
+    state.currentProduct = current.id;
+    state.lineDotVolume = current.linedot;
+    state.usedMaterial = current.usedmaterial;
   },
   setSaveMaterial: function setSaveMaterial(state, current) {
     state.saveMaterial.push(current);

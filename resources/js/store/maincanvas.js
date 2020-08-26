@@ -1,14 +1,14 @@
 import Axios from 'axios';
 const state = {
+	allDotVolume: 900,
+	currentMaterial: {},
+	currentProduct: 0,
 	drawingColor: 'black',
 	drawingTool: 'brush',
-	allDotVolume: 900,
 	lineDotVolume: 30,
-	currentProduct: 0,
-	saveStatus: false,
-	currentMaterial: {},
-	usedMaterial: String,
 	saveMaterial: [],
+	saveStatus: false,
+	usedMaterial: String,
 };
 
 const getters = {};
@@ -20,12 +20,6 @@ const mutations = {
 	drawingTool(state, tool) {
 		state.drawingTool = tool;
 	},
-	setCurrentProduct(state, current) {
-		state.allDotVolume = current.alldot;
-		state.lineDotVolume = current.linedot;
-		state.currentProduct = current.id;
-		state.usedMaterial = current.usedmaterial;
-	},
 	productSave(state) {
 		state.saveStatus = !state.saveStatus;
 	},
@@ -34,6 +28,12 @@ const mutations = {
 	},
 	setCurrentMaterial(state, current) {
 		state.currentMaterial = current;
+	},
+	setCurrentProduct(state, current) {
+		state.allDotVolume = current.alldot;
+		state.currentProduct = current.id;
+		state.lineDotVolume = current.linedot;
+		state.usedMaterial = current.usedmaterial;
 	},
 	setSaveMaterial(state, current) {
 		state.saveMaterial.push(current);

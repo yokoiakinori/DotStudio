@@ -90,6 +90,10 @@ export default {
 		};
 	},
 	methods: {
+		clearError() {
+			this.$store.commit('auth/setLoginErrorMessages', null);
+			this.$store.commit('auth/setRegisterErrorMessages', null);
+		},
 		async login() {
 			await this.$store.dispatch('auth/login', this.loginForm);
 
@@ -103,10 +107,6 @@ export default {
 			if (this.apiStatus) {
 				this.$router.push('/');
 			}
-		},
-		clearError() {
-			this.$store.commit('auth/setLoginErrorMessages', null);
-			this.$store.commit('auth/setRegisterErrorMessages', null);
 		},
 	},
 	created() {

@@ -65,21 +65,21 @@ export default {
 	},
 	data() {
 		return {
-			tab: 1,
-			user: {
-				name: String,
-				introduction: String,
-				thumbnail: String,
-				followCount: Number,
-				followerCount: Number,
-			},
-			products: [],
 			currentPage: 0,
 			lastPage: 0,
 			maxwidth: 900,
+			products: [],
 			style: {
 				width: '900px',
 				height: '1500px',
+			},
+			tab: 1,
+			user: {
+				followCount: Number,
+				followerCount: Number,
+				introduction: String,
+				name: String,
+				thumbnail: String,
 			},
 		};
 	},
@@ -95,18 +95,36 @@ export default {
 			return this.$store.getters['auth/userid'];
 		},
 	},
+	watch: {
+		$route: {
+			async handler() {
+				this.$store.commit('randing/loadingSwitch', true);
+				await this.showUser();
+				await this.showProducts();
+				this.$store.commit('randing/loadingSwitch', false);
+			},
+			immediate: true,
+		},
+		tab: function(val) {
+			if (val == 1) {
+				this.showProducts();
+			} else {
+				this.showLikeProducts();
+			}
+		},
+	},
 	methods: {
-		async showUser() {
-			const response = await axios.get(`/api/users/${this.id}`);
-			if (response.status !== OK) {
-				this.$store.commit('error/setCode', response.status);
+		onLikeClick({ id, liked }) {
+			if (!this.$store.getters['auth/check']) {
+				alert('いいね機能を使うにはログインしてください。');
 				return false;
 			}
-			this.user.name = response.data[0].name;
-			this.user.introduction = response.data[0].introduction;
-			this.user.thumbnail = response.data[0].userthumbnail.url;
-			this.user.followCount = response.data[1];
-			this.user.followerCount = response.data[2];
+
+			if (liked) {
+				this.unlike(id);
+			} else {
+				this.like(id);
+			}
 		},
 		async showProducts() {
 			this.products.length = 0;
@@ -130,17 +148,17 @@ export default {
 			this.currentPage = response.data.current_page;
 			this.lastPage = response.data.last_page;
 		},
-		onLikeClick({ id, liked }) {
-			if (!this.$store.getters['auth/check']) {
-				alert('いいね機能を使うにはログインしてください。');
+		async showUser() {
+			const response = await axios.get(`/api/users/${this.id}`);
+			if (response.status !== OK) {
+				this.$store.commit('error/setCode', response.status);
 				return false;
 			}
-
-			if (liked) {
-				this.unlike(id);
-			} else {
-				this.like(id);
-			}
+			this.user.name = response.data[0].name;
+			this.user.introduction = response.data[0].introduction;
+			this.user.thumbnail = response.data[0].userthumbnail.url;
+			this.user.followCount = response.data[1];
+			this.user.followerCount = response.data[2];
 		},
 		async like(id) {
 			const response = await axios.put(`/api/products/${id}/like`);
@@ -173,25 +191,6 @@ export default {
 				}
 				return product;
 			});
-		},
-	},
-
-	watch: {
-		$route: {
-			async handler() {
-				this.$store.commit('randing/loadingSwitch', true);
-				await this.showUser();
-				await this.showProducts();
-				this.$store.commit('randing/loadingSwitch', false);
-			},
-			immediate: true,
-		},
-		tab: function(val) {
-			if (val == 1) {
-				this.showProducts();
-			} else {
-				this.showLikeProducts();
-			}
 		},
 	},
 };

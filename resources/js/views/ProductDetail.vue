@@ -11,6 +11,11 @@
 			<button class="formButton" v-if="isLogin && myProduct" @click="onMaterialClick">
 				素材としてダウンロード
 			</button>
+			<ul>
+				<li v-for="material in product.usedmaterial" :key="material.id">
+					{{ material.user.name }}さんの{{ material.productname }}が使用されています。
+				</li>
+			</ul>
 		</div>
 		<div class="comments">
 			<h2>Comments</h2>
@@ -68,6 +73,16 @@ export default {
 		},
 		myProduct() {
 			return this.product.user.id != this.$store.getters['auth/userid'];
+		},
+	},
+	watch: {
+		$route: {
+			async handler() {
+				this.$store.commit('randing/loadingSwitch', true);
+				await this.showProduct();
+				this.$store.commit('randing/loadingSwitch', false);
+			},
+			immediate: true,
 		},
 	},
 	methods: {
@@ -164,16 +179,6 @@ export default {
 				this.$store.commit('error/setCode', response.status);
 				return false;
 			}
-		},
-	},
-	watch: {
-		$route: {
-			async handler() {
-				this.$store.commit('randing/loadingSwitch', true);
-				await this.showProduct();
-				this.$store.commit('randing/loadingSwitch', false);
-			},
-			immediate: true,
 		},
 	},
 };

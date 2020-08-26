@@ -15,13 +15,30 @@ export default {
 	components: {
 		AllProducts,
 	},
+	props: {
+		page: {
+			type: Number,
+			required: false,
+			default: 1,
+		},
+	},
 	data() {
 		return {
-			products: [],
 			currentPage: 0,
 			lastPage: 0,
+			products: [],
 			routerPath: '/',
 		};
+	},
+	watch: {
+		$route: {
+			async handler() {
+				this.$store.commit('randing/loadingSwitch', true);
+				await this.showProducts();
+				this.$store.commit('randing/loadingSwitch', false);
+			},
+			immediate: true,
+		},
 	},
 	methods: {
 		async showProducts() {
@@ -33,23 +50,6 @@ export default {
 			this.products = response.data.data;
 			this.currentPage = response.data.current_page;
 			this.lastPage = response.data.last_page;
-		},
-	},
-	props: {
-		page: {
-			type: Number,
-			required: false,
-			default: 1,
-		},
-	},
-	watch: {
-		$route: {
-			async handler() {
-				this.$store.commit('randing/loadingSwitch', true);
-				await this.showProducts();
-				this.$store.commit('randing/loadingSwitch', false);
-			},
-			immediate: true,
 		},
 	},
 };

@@ -16,6 +16,13 @@ export default {
 	components: {
 		AllProducts,
 	},
+	props: {
+		page: {
+			type: Number,
+			required: false,
+			default: 1,
+		},
+	},
 	data() {
 		return {
 			products: [],
@@ -27,18 +34,6 @@ export default {
 	computed: mapState({
 		searchTag: state => state.search.tag,
 	}),
-	methods: {
-		async showProducts() {
-			const response = await axios.get(`/api/tagsearch/?page=${this.page}&tag=${this.searchTag}`);
-			if (response.status !== OK) {
-				this.$store.commit('error/setCode', response.status);
-				return false;
-			}
-			this.products = response.data.data;
-			this.currentPage = response.data.current_page;
-			this.lastPage = response.data.last_page;
-		},
-	},
 	watch: {
 		$route: {
 			async handler() {
@@ -52,11 +47,16 @@ export default {
 			immediate: true,
 		},
 	},
-	props: {
-		page: {
-			type: Number,
-			required: false,
-			default: 1,
+	methods: {
+		async showProducts() {
+			const response = await axios.get(`/api/tagsearch/?page=${this.page}&tag=${this.searchTag}`);
+			if (response.status !== OK) {
+				this.$store.commit('error/setCode', response.status);
+				return false;
+			}
+			this.products = response.data.data;
+			this.currentPage = response.data.current_page;
+			this.lastPage = response.data.last_page;
 		},
 	},
 };

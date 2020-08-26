@@ -22,6 +22,16 @@ export default {
 			notifications: [],
 		};
 	},
+	watch: {
+		$route: {
+			async handler() {
+				this.$store.commit('randing/loadingSwitch', true);
+				await this.showNotifications();
+				this.$store.commit('randing/loadingSwitch', false);
+			},
+			immediate: true,
+		},
+	},
 	methods: {
 		async showNotifications() {
 			const response = await axios.get('/api/notification');
@@ -31,16 +41,6 @@ export default {
 			const id = this.notifications[index].id;
 			const response = await axios.delete(`/api/notification/${id}`);
 			this.notifications.splice(index, 1);
-		},
-	},
-	watch: {
-		$route: {
-			async handler() {
-				this.$store.commit('randing/loadingSwitch', true);
-				await this.showNotifications();
-				this.$store.commit('randing/loadingSwitch', false);
-			},
-			immediate: true,
 		},
 	},
 };

@@ -64,35 +64,10 @@ export default {
 		};
 	},
 	methods: {
-		async showUser() {
-			const response = await axios.get(`/api/users/${this.id}`);
-			if (response.status !== OK) {
-				this.$store.commit('error/setCode', response.status);
-				return false;
-			}
-			this.user.name = response.data[0].name;
-			this.user.introduction = response.data[0].introduction;
-			this.user.thumbnail = response.data[0].userthumbnail.url;
-			this.user.followCount = response.data[1];
-			this.user.followerCount = response.data[2];
+		modalToggle() {
+			this.reset();
+			this.modalWindow = !this.modalWindow;
 		},
-
-		async profileUpdate() {
-			const response = await axios.post('/api/userupdate', this.updateForm);
-			if (response.status !== OK) {
-				this.$store.commit('error/setCode', response.status);
-				return false;
-			}
-			this.$store.commit('auth/updateUser', response);
-		},
-
-		async thumbnailUpdate() {
-			const formData = new FormData();
-			formData.append('userthumbnail', this.thumbnail);
-			const response = await axios.post('/api/thumbnail/update', formData);
-			this.modalToggle();
-		},
-
 		onFileChange(event) {
 			// 何も選択されていなかったら処理中断
 			if (event.target.files.length === 0) {
@@ -123,14 +98,35 @@ export default {
 			reader.readAsDataURL(event.target.files[0]);
 			this.thumbnail = event.target.files[0];
 		},
-
+		async profileUpdate() {
+			const response = await axios.post('/api/userupdate', this.updateForm);
+			if (response.status !== OK) {
+				this.$store.commit('error/setCode', response.status);
+				return false;
+			}
+			this.$store.commit('auth/updateUser', response);
+		},
 		reset() {
 			this.preview = '';
 			this.thumbnail = null;
 		},
-		modalToggle() {
-			this.reset();
-			this.modalWindow = !this.modalWindow;
+		async showUser() {
+			const response = await axios.get(`/api/users/${this.id}`);
+			if (response.status !== OK) {
+				this.$store.commit('error/setCode', response.status);
+				return false;
+			}
+			this.user.name = response.data[0].name;
+			this.user.introduction = response.data[0].introduction;
+			this.user.thumbnail = response.data[0].userthumbnail.url;
+			this.user.followCount = response.data[1];
+			this.user.followerCount = response.data[2];
+		},
+		async thumbnailUpdate() {
+			const formData = new FormData();
+			formData.append('userthumbnail', this.thumbnail);
+			const response = await axios.post('/api/thumbnail/update', formData);
+			this.modalToggle();
 		},
 	},
 	watch: {

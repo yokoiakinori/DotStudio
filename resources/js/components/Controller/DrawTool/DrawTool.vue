@@ -17,6 +17,7 @@
 export default {
 	data() {
 		return {
+			currentToolId: 0,
 			tools: [
 				{ id: 0, class: 'fas fa-paint-brush brush', name: 'brush' },
 				{ id: 1, class: 'fas fa-eraser', name: 'eraser' },
@@ -27,7 +28,6 @@ export default {
 				{ id: 6, class: 'fas fa-stamp', name: 'stamp' },
 				{ id: 7, class: 'fas fa-ban', name: 'reset' },
 			],
-			currentToolId: 0,
 		};
 	},
 	methods: {
